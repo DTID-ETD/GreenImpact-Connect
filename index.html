@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenImpact Connect | DTID Emerging Technology Division</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+:root {
+  --dk:#0C3E4D; --md:#26727A; --lt:#D8ECEF; --xlt:#F0F6F7;
+  --wh:#FFFFFF; --bk:#1A1A1A; --am:#BA7517; --gn:#1B8C4E;
+  --rd:#7A2010; --gr:#607D8B;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Calibri,sans-serif;}
+body{background:var(--xlt);color:var(--bk);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+/* HEADER */
+header{background:var(--dk);color:#fff;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:34px;height:34px;background:var(--md);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text{font-size:19px;font-weight:700;}
+.logo-sub{font-size:10px;color:var(--lt);letter-spacing:.6px;margin-top:1px;}
+.header-right{font-size:11px;color:var(--lt);text-align:right;line-height:1.5;}
+.badge{background:var(--am);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:2px;}
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;}
+/* NAV */
+nav{width:210px;background:var(--dk);padding:16px 0;flex-shrink:0;overflow-y:auto;}
+.nav-section{font-size:10px;color:#5a8a96;font-weight:700;letter-spacing:1.2px;padding:12px 18px 5px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:#a8cdd4;font-size:13px;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:rgba(38,114,122,.3);color:#fff;border-left-color:var(--md);}
+.nav-icon{width:20px;text-align:center;font-size:15px;}
+.nav-badge{background:var(--gn);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:auto;}
+/* MAIN */
+main{flex:1;overflow-y:auto;padding:24px 28px;}
+.page-title{font-size:21px;font-weight:700;color:var(--dk);margin-bottom:3px;}
+.page-sub{font-size:12.5px;color:var(--gr);margin-bottom:20px;}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi-card{background:#fff;border-radius:10px;padding:18px 20px;border-top:4px solid var(--md);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.kpi-card.amber{border-top-color:var(--am);}
+.kpi-card.green{border-top-color:var(--gn);}
+.kpi-value{font-size:30px;font-weight:800;color:var(--dk);line-height:1;}
+.kpi-label{font-size:11.5px;color:var(--gr);margin-top:5px;font-weight:500;}
+.kpi-delta{font-size:11px;color:var(--gn);margin-top:3px;}
+/* CARD */
+.card{background:#fff;border-radius:10px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:18px;}
+.card-title{font-size:13.5px;font-weight:700;color:var(--dk);margin-bottom:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--lt);padding-bottom:9px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{background:var(--dk);color:#fff;padding:9px 11px;text-align:left;font-weight:600;font-size:11.5px;}
+td{padding:8px 11px;border-bottom:1px solid #eef2f3;vertical-align:middle;}
+tr:hover td{background:var(--xlt);}
+tr:last-child td{border-bottom:none;}
+/* STATUS */
+.status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;}
+.status.funded{background:#e6f4ed;color:var(--gn);}
+.status.matched{background:#e8f4f5;color:var(--md);}
+.status.review{background:#fef6e6;color:var(--am);}
+.status.pending{background:#f5ece9;color:var(--rd);}
+.status.success{background:#e6f4ed;color:var(--gn);font-size:13px;padding:4px 14px;}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;}
+/* SCORE */
+.score-wrap{display:flex;align-items:center;gap:7px;}
+.score-bar{flex:1;height:5px;background:var(--lt);border-radius:3px;overflow:hidden;min-width:60px;}
+.score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--md),var(--gn));}
+.score-num{font-size:12px;font-weight:700;color:var(--dk);min-width:30px;}
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;}
+.search-input{flex:1;padding:8px 13px;border:1.5px solid var(--lt);border-radius:7px;font-size:13px;background:#fff;outline:none;transition:border .15s;}
+.search-input:focus{border-color:var(--md);}
+.filter-select{padding:8px 12px;border:1.5px solid var(--lt);border-radius:7px;font-size:12.5px;background:#fff;color:var(--bk);outline:none;cursor:pointer;}
+.btn{padding:8px 16px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.btn:hover{opacity:.88;}
+.btn-teal{background:var(--md);color:#fff;}
+.btn-green{background:var(--gn);color:#fff;}
+.no-results{text-align:center;padding:32px;color:var(--gr);font-size:13px;}
+/* FLOW */
+.flow{display:flex;align-items:stretch;gap:0;margin:14px 0;}
+.flow-step{flex:1;text-align:center;padding:10px 6px;background:var(--xlt);border:1px solid var(--lt);font-size:11.5px;position:relative;}
+.flow-step.done{background:#e6f4ed;border-color:#b2ddc4;}
+.flow-step.active-step{background:var(--lt);border-color:var(--md);}
+.flow-num{font-size:16px;font-weight:800;color:var(--md);display:block;margin-bottom:3px;}
+.flow-step.done .flow-num{color:var(--gn);}
+.flow-arrow{color:var(--md);font-size:16px;display:flex;align-items:center;padding:0 2px;}
+/* MATCH */
+.match-result{background:linear-gradient(135deg,var(--dk),var(--md));color:#fff;border-radius:12px;padding:22px;text-align:center;margin:16px 0;}
+.match-score-big{font-size:60px;font-weight:900;line-height:1;}
+.match-label{font-size:13px;opacity:.8;margin-top:5px;}
+.match-gate{font-size:11.5px;background:rgba(255,255,255,.15);border-radius:5px;padding:5px 12px;display:inline-block;margin-top:8px;}
+.gate-ok{color:#7effc0;}
+/* ATTR */
+.attr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.attr-row{display:flex;align-items:center;padding:6px 10px;background:var(--xlt);border-radius:5px;font-size:12px;gap:8px;}
+.attr-key{font-weight:700;color:var(--md);min-width:22px;}
+.attr-val{flex:1;color:var(--bk);}
+.attr-w{color:var(--am);font-weight:700;font-size:11px;}
+/* INVESTOR */
+.inv-card{background:linear-gradient(135deg,var(--dk),var(--md));color:#fff;border-radius:12px;padding:20px 22px;margin-bottom:18px;}
+.inv-name{font-size:19px;font-weight:800;}
+.inv-meta{font-size:12px;opacity:.75;margin-top:3px;}
+.crit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px;}
+.crit-item{background:rgba(255,255,255,.12);border-radius:7px;padding:9px 11px;}
+.crit-label{font-size:10px;opacity:.7;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px;}
+.crit-val{font-size:12.5px;font-weight:600;}
+/* DLT */
+.tx-grid{display:grid;grid-template-columns:190px 1fr;}
+.tx-key{background:var(--lt);padding:8px 13px;font-size:11.5px;font-weight:700;color:var(--dk);border-bottom:1px solid #c8dfe3;}
+.tx-val{background:#fff;padding:8px 13px;font-size:12px;border-bottom:1px solid #eef2f3;word-break:break-all;}
+.tx-mono{font-family:'Consolas',monospace;font-size:11px;color:var(--md);}
+.tranche-track{display:flex;margin-top:6px;}
+.tr-item{flex:1;text-align:center;padding:9px 6px;font-size:11px;font-weight:700;border:1px solid #ddd;}
+.tr-item.done{background:var(--gn);color:#fff;border-color:var(--gn);}
+.tr-item.now{background:var(--am);color:#fff;border-color:var(--am);}
+.tr-item.wait{background:#fff;color:var(--gr);}
+.tr-item:first-child{border-radius:6px 0 0 6px;}
+.tr-item:last-child{border-radius:0 6px 6px 0;}
+.oracle-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--lt);font-size:12.5px;}
+.oracle-check{color:var(--gn);font-weight:700;font-size:15px;flex-shrink:0;}
+.info-banner{background:var(--lt);border-left:4px solid var(--md);padding:10px 14px;border-radius:0 6px 6px 0;font-size:12.5px;color:var(--dk);margin-bottom:14px;}
+.warn-banner{background:#fef6e6;border-left:4px solid var(--am);padding:10px 14px;border-radius:0 6px 6px 0;font-size:12.5px;color:#7a4a00;margin-bottom:14px;}
+/* STAGE PILL */
+.s-pill{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11.5px;font-weight:700;color:#fff;}
+.s-pill.o1{background:var(--md);}
+.s-pill.o2{background:var(--gn);}
+/* FOOTER */
+footer{background:var(--dk);color:#5a8a96;font-size:10.5px;padding:8px 28px;display:flex;justify-content:space-between;flex-shrink:0;}
+/* TAG */
+.tag{display:inline-block;background:var(--lt);color:var(--md);font-size:11px;padding:2px 8px;border-radius:8px;margin:1px;}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;}
+.modal{background:#fff;border-radius:12px;padding:28px 30px;width:540px;max-width:94vw;box-shadow:0 8px 40px rgba(0,0,0,.18);}
+.modal-title{font-size:17px;font-weight:700;color:var(--dk);margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--gr);margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-field{display:flex;flex-direction:column;gap:5px;}
+.form-field.full{grid-column:1/-1;}
+.form-label{font-size:11.5px;font-weight:700;color:var(--dk);}
+.form-input,.form-select{padding:8px 11px;border:1.5px solid var(--lt);border-radius:7px;font-size:13px;background:#fff;outline:none;transition:border .15s;font-family:inherit;}
+.form-input:focus,.form-select:focus{border-color:var(--md);}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+.btn-ghost{background:#fff;border:1.5px solid var(--lt);color:var(--gr);padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;}
+.form-note{font-size:11px;color:var(--gr);grid-column:1/-1;background:var(--xlt);padding:8px 10px;border-radius:5px;}
+
+/* ── ZOOM OVERLAY ─────────────────────────────────────────────────────────── */
+.zoom-overlay{position:fixed;inset:0;background:var(--xlt);z-index:900;display:flex;flex-direction:column;overflow:hidden;}
+.zoom-enter{animation:zoomIn .3s cubic-bezier(.2,0,0,1) forwards;}
+.zoom-exit{animation:zoomOut .22s cubic-bezier(.4,0,1,1) forwards;}
+@keyframes zoomIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes zoomOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.96) translateY(12px)}}
+.screen-slide-in{animation:slideIn .25s cubic-bezier(.2,0,0,1) forwards;}
+@keyframes slideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+.screen-slide-back{animation:slideBack .25s cubic-bezier(.2,0,0,1) forwards;}
+@keyframes slideBack{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
+.zoom-bar{background:var(--dk);color:#fff;padding:0 22px;height:50px;display:flex;align-items:center;gap:14px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.zoom-back-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px;}
+.zoom-back-btn:hover{background:rgba(255,255,255,.2);}
+.zoom-stage-label{font-size:13px;font-weight:700;color:#fff;flex:1;text-align:center;}
+.zoom-stage-sub{font-size:10px;opacity:.6;text-align:center;}
+.zoom-dots{display:flex;gap:6px;align-items:center;}
+.zoom-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .22s;cursor:pointer;}
+.zoom-dot.on{background:var(--am);width:20px;border-radius:3.5px;}
+.zoom-nav-btns{display:flex;gap:10px;}
+.zoom-nav-btn{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;height:38px;padding:0 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.zoom-nav-btn:hover:not(:disabled){background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.45);}
+.zoom-nav-btn:disabled{opacity:.25;cursor:not-allowed;}
+.zoom-nav-btn.next{background:var(--am);border-color:var(--am);}
+.zoom-nav-btn.next:hover:not(:disabled){background:#cf8820;border-color:#cf8820;}
+.zoom-content{flex:1;overflow-y:auto;padding:24px 28px;}
+.zoom-key-hint{font-size:10px;opacity:.45;font-family:'Consolas',monospace;white-space:nowrap;}
+
+/* ── FLOW DIAGRAM ─────────────────────────────────────────────────────────── */
+.flow-diagram{display:flex;align-items:flex-start;padding:20px 0 8px;position:relative;}
+.flow-node{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;}
+.flow-card{background:#fff;border-radius:14px;padding:18px 10px 14px;text-align:center;width:calc(100% - 12px);box-shadow:0 3px 14px rgba(12,62,77,.10);border:2px solid var(--lt);transition:all .22s;cursor:pointer;}
+.flow-card:hover{border-color:var(--md);box-shadow:0 8px 28px rgba(38,114,122,.22);transform:translateY(-5px);}
+.flow-card:active{transform:translateY(-2px);box-shadow:0 4px 14px rgba(38,114,122,.18);}
+.flow-num{width:34px;height:34px;background:linear-gradient(135deg,var(--md),var(--dk));border-radius:50%;color:#fff;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 2px 8px rgba(38,114,122,.3);}
+.flow-icon{font-size:22px;margin-bottom:7px;}
+.flow-title{font-weight:700;font-size:12.5px;color:var(--dk);margin-bottom:5px;line-height:1.3;}
+.flow-desc{font-size:10.5px;color:var(--gr);line-height:1.5;margin-bottom:8px;}
+.flow-cta{font-size:11px;font-weight:700;color:var(--md);}
+.flow-connector{flex:0 0 32px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:46px;position:relative;}
+.flow-line{width:32px;height:2px;background:linear-gradient(90deg,var(--md),var(--lt));position:relative;overflow:visible;}
+.flow-pulse{position:absolute;top:-4px;left:-2px;width:10px;height:10px;border-radius:50%;background:var(--am);animation:dataPulse 1.9s infinite ease-in-out;}
+.flow-pulse:nth-child(2){animation-delay:.63s;opacity:.7;}
+.flow-pulse:nth-child(3){animation-delay:1.26s;opacity:.4;}
+@keyframes dataPulse{0%{left:-2px;opacity:1;transform:scale(1)}80%{left:26px;opacity:.3;transform:scale(.6)}100%{left:28px;opacity:0;transform:scale(.4)}}
+.flow-arrowhead{font-size:13px;color:var(--md);position:absolute;right:-8px;top:50%;transform:translateY(-50%);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useMemo, useEffect, useRef } = React;
+
+// ─── SEED DATA ───────────────────────────────────────────────────────────────
+const SEED_PROJECTS = [
+  { id:'SC-KE-2026-0041', name:'Kisumu Solar Hub',          country:'Kenya',       flag:'🇰🇪', tech:'Solar PV',              capital:'$75,000',  score:87, status:'funded',  statusLabel:'Funded (T2/4)' },
+  { id:'SC-IN-2026-0008', name:'Rajasthan Solar Irrigation', country:'India',       flag:'🇮🇳', tech:'Solar PV',              capital:'$120,000', score:85, status:'funded',  statusLabel:'Funded (T1/3)' },
+  { id:'SC-PH-2026-0033', name:'Bohol Mangrove Restoration', country:'Philippines', flag:'🇵🇭', tech:'Blue Carbon',           capital:'$95,000',  score:81, status:'matched', statusLabel:'Matched' },
+  { id:'SC-RW-2026-0019', name:'Rwanda Cold Chain Network',  country:'Rwanda',      flag:'🇷🇼', tech:'Climate-Resilient Agri',capital:'$60,000',  score:73, status:'review',  statusLabel:'In Review' },
+  { id:'SC-GH-2026-0027', name:'Accra Urban Wind',           country:'Ghana',       flag:'🇬🇭', tech:'Wind Energy',           capital:'$200,000', score:69, status:'pending', statusLabel:'Pipeline' },
+  { id:'SC-NG-2026-0052', name:'Lagos Waste-to-Energy',      country:'Nigeria',     flag:'🇳🇬', tech:'Waste-to-Energy',       capital:'$340,000', score:64, status:'matched', statusLabel:'Matched' },
+];
+
+const TECH_OPTIONS = ['Solar PV','Blue Carbon','Climate-Resilient Agri','Wind Energy','Waste-to-Energy','Early Warning / Adaptation','Hydro','Geothermal'];
+const TECHS = ['All Technologies',...TECH_OPTIONS];
+const STATUSES = ['All Statuses','Funded','Matched','In Review','Pipeline'];
+const COUNTRY_FLAGS = {Kenya:'🇰🇪',India:'🇮🇳',Philippines:'🇵🇭',Rwanda:'🇷🇼',Ghana:'🇬🇭',Nigeria:'🇳🇬',Tanzania:'🇹🇿',Uganda:'🇺🇬',Bangladesh:'🇧🇩',Vietnam:'🇻🇳',Indonesia:'🇮🇩',Cambodia:'🇰🇭',Ethiopia:'🇪🇹',Mozambique:'🇲🇿',Zambia:'🇿🇲',Other:'🌍'};
+
+// Auto-generate a contract ID
+let _idCounter = 53;
+function genId(country) {
+  const code = country.slice(0,2).toUpperCase();
+  _idCounter++;
+  return `SC-${code}-2026-0${_idCounter}`;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const ScoreBar = ({score}) => (
+  <div className="score-wrap">
+    <div className="score-bar"><div className="score-fill" style={{width:`${score}%`}}/></div>
+    <span className="score-num">{score}%</span>
+  </div>
+);
+const Status = ({type,label}) => <span className={`status ${type}`}><span className="dot"/> {label}</span>;
+
+// ─── SCREEN 0: HOME / PLATFORM OVERVIEW ──────────────────────────────────────
+const FLOW_STAGES = [
+  {n:1,icon:'📋',title:'Project Registration',sub:'Submit & verify',desc:'Developer registers project with technology type, capital requirement, and supporting documents. System assigns a tamper-proof contract ID.',screen:'registry'},
+  {n:2,icon:'🤖',title:'AI Stage O1',sub:'Indicative score',desc:'8 investor criteria matched against 8 project attributes. Weighted compatibility score generated in seconds — no manual review needed.',screen:'matching'},
+  {n:3,icon:'💼',title:'Investor Review',sub:'Express interest',desc:'Investors see a ranked shortlist of matched projects. Expressing interest on a score 70% or above triggers deep verification automatically.',screen:'investor'},
+  {n:4,icon:'🔍',title:'AI Stage O2',sub:'Evidence verified',desc:'Project uploads technical reports, land permits, and MRV baseline data. Engine cross-checks documents against investor requirements.',screen:'matching'},
+  {n:5,icon:'⛓️',title:'DLT Disbursement',sub:'Stellar smart contract',desc:'A Soroban smart contract on Stellar releases payment tranches automatically when the dMRV oracle confirms each milestone is met.',screen:'dlt'},
+];
+
+const HomeScreen = ({goTo, zoomTo, projectCount}) => (
+  <div>
+    <div style={{background:'linear-gradient(135deg,var(--dk) 0%,#1a5a6b 50%,var(--md) 100%)',color:'#fff',borderRadius:14,padding:'30px 34px',marginBottom:22,position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',top:-30,right:-30,width:200,height:200,borderRadius:'50%',background:'rgba(255,255,255,.04)'}}/>
+      <div style={{position:'absolute',bottom:-50,right:60,width:140,height:140,borderRadius:'50%',background:'rgba(255,255,255,.03)'}}/>
+      <div style={{position:'relative'}}>
+        <div style={{fontSize:10,letterSpacing:2,opacity:.55,textTransform:'uppercase',marginBottom:10,fontFamily:'Consolas,monospace'}}>Digital Technology Institute for Development · Emerging Technology Division</div>
+        <div style={{fontSize:28,fontWeight:900,lineHeight:1.15,marginBottom:11}}>GreenImpact Connect</div>
+        <div style={{fontSize:13.5,opacity:.85,lineHeight:1.7,maxWidth:560,marginBottom:20}}>
+          An AI-powered platform connecting climate finance investors with small environmental projects in developing countries — closing a gap that WIPO GREEN and WIPO Match do not address.
+        </div>
+        <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
+          {[`🌍 ${projectCount} Projects`,`🤖 AI Matching O1+O2`,`⛓️ Stellar DLT`,`📊 23 Countries`].map(t=>(
+            <div key={t} style={{background:'rgba(255,255,255,.13)',border:'1px solid rgba(255,255,255,.18)',borderRadius:8,padding:'6px 14px',fontSize:12}}>{t}</div>
+          ))}
+        </div>
+        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+          <button className="btn" style={{background:'rgba(255,255,255,.18)',border:'1px solid rgba(255,255,255,.3)',color:'#fff',padding:'8px 20px',fontSize:12.5,fontWeight:700}} onClick={()=>zoomTo('registry')}>
+            ▶ Start Demo Tour
+          </button>
+          <span style={{fontSize:10.5,opacity:.45,fontFamily:'Consolas,monospace'}}>or click any stage below · press Esc to return</span>
+        </div>
+      </div>
+    </div>
+
+    <div className="card">
+      <div className="card-title" style={{marginBottom:4}}>🗺️ Five-Stage Automated Pipeline</div>
+      <div style={{fontSize:12,color:'var(--gr)',marginBottom:18}}>Click any stage to zoom in. Use arrow keys or the nav bar to move between stages.</div>
+      <div className="flow-diagram">
+        {FLOW_STAGES.map((s,i)=>(
+          <React.Fragment key={s.n}>
+            <div className="flow-node" onClick={()=>zoomTo(s.screen)}>
+              <div className="flow-card">
+                <div className="flow-num">{s.n}</div>
+                <div className="flow-icon">{s.icon}</div>
+                <div className="flow-title">{s.title}</div>
+                <div style={{fontSize:10,color:'var(--md)',fontWeight:700,textTransform:'uppercase',letterSpacing:'.5px',marginBottom:5}}>{s.sub}</div>
+                <div className="flow-desc">{s.desc}</div>
+                <div className="flow-cta">Zoom in →</div>
+              </div>
+            </div>
+            {i < FLOW_STAGES.length - 1 && (
+              <div className="flow-connector">
+                <div className="flow-line">
+                  <div className="flow-pulse"/>
+                  <div className="flow-pulse"/>
+                  <div className="flow-pulse"/>
+                </div>
+                <div className="flow-arrowhead">›</div>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{marginTop:16,background:'linear-gradient(90deg,var(--xlt),var(--lt))',borderRadius:8,padding:'10px 16px',fontSize:12,color:'var(--dk)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <span style={{opacity:.75}}>Traditional process: manual emails · unverified claims · weeks of due diligence · no payment assurance</span>
+        <span style={{color:'var(--gn)',fontWeight:700,whiteSpace:'nowrap',marginLeft:20}}>✓ GreenImpact Connect automates all five stages</span>
+      </div>
+    </div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
+      {[
+        {title:'WIPO GREEN',sub:'Technology Database',desc:'Lists clean technology innovations globally. Helps organisations find green tech patents and solutions. No mechanism to connect project developers with investors.',ok:false,ref:'wipogreen.wipo.int'},
+        {title:'WIPO Match',sub:'IP Assistance Matching',desc:'Connects organisations seeking IP technical assistance with legal and advisory providers. Scoped to intellectual property support, not climate finance.',ok:false,ref:'wipo.int/en/web/wipo-match'},
+        {title:'GreenImpact Connect',sub:'Climate Finance Matching',desc:'Closes the gap: AI-powered matching between investors and small environmental projects in developing countries, with blockchain-verified disbursement.',ok:true,ref:'DTID · COP31 Antalya, November 2026'},
+      ].map(p=>(
+        <div key={p.title} style={{background:'#fff',borderRadius:10,padding:'16px 18px',boxShadow:'0 1px 4px rgba(0,0,0,.07)',borderTop:`3px solid ${p.ok?'var(--gn)':'var(--lt)'}`}}>
+          <div style={{fontWeight:700,fontSize:13,color:'var(--dk)',marginBottom:2}}>{p.ok?'🌱 ':''}{p.title}</div>
+          <div style={{fontSize:10.5,color:'var(--gr)',textTransform:'uppercase',letterSpacing:'.5px',marginBottom:8}}>{p.sub}</div>
+          <div style={{fontSize:12,color:'var(--bk)',lineHeight:1.55,marginBottom:10}}>{p.desc}</div>
+          <div style={{fontSize:11,color:p.ok?'var(--gn)':'var(--rd)',fontWeight:600}}>{p.ok?'✓ Fills the gap':'✗ Does not cover direct climate finance matching'}</div>
+          <div style={{fontSize:10.5,color:'var(--gr)',marginTop:5}}>{p.ref}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+// ─── SCREEN 1: DASHBOARD ─────────────────────────────────────────────────────
+const Dashboard = ({goTo, projectCount}) => (
+  <div>
+    <div className="page-title">Portfolio Dashboard</div>
+    <div className="page-sub">Live portfolio overview — all registered projects, capital matched, and regional activity | Updated 3 Nov 2026</div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:20}}>
+      {[
+        {title:'WIPO GREEN',sub:'Technology Database',desc:'Lists clean technology innovations globally. Helps organisations find green tech patents and solutions. No mechanism to connect project developers with investors.',ok:false,ref:'wipogreen.wipo.int'},
+        {title:'WIPO Match',sub:'IP Assistance Matching',desc:'Connects organisations seeking IP technical assistance with legal and advisory providers. Scoped to intellectual property support — not climate finance.',ok:false,ref:'wipo.int/en/web/wipo-match'},
+        {title:'GreenImpact Connect',sub:'Climate Finance Matching',desc:'Closes the gap: AI-powered matching between investors and small environmental projects in developing countries, with blockchain-verified disbursement.',ok:true,ref:'DTID · COP31 Antalya, November 2026'},
+      ].map(p=>(
+        <div key={p.title} style={{background:'#fff',borderRadius:10,padding:'14px 16px',boxShadow:'0 1px 4px rgba(0,0,0,.07)',borderTop:`3px solid ${p.ok?'var(--gn)':'var(--lt)'}`}}>
+          <div style={{fontWeight:700,fontSize:12.5,color:'var(--dk)',marginBottom:2}}>{p.ok?'🌱 ':''}{p.title}</div>
+          <div style={{fontSize:10,color:'var(--gr)',textTransform:'uppercase',letterSpacing:'.5px',marginBottom:7}}>{p.sub}</div>
+          <div style={{fontSize:11.5,color:'var(--bk)',lineHeight:1.55,marginBottom:8}}>{p.desc}</div>
+          <div style={{fontSize:11,color:p.ok?'var(--gn)':'var(--rd)',fontWeight:600}}>{p.ok?'✓ Fills the gap':'✗ Does not cover direct climate finance matching'}</div>
+          <div style={{fontSize:10,color:'var(--gr)',marginTop:4}}>{p.ref}</div>
+        </div>
+      ))}
+    </div>
+
+    <div className="kpi-grid">
+      <div className="kpi-card"><div className="kpi-value">{projectCount}</div><div className="kpi-label">Projects Registered</div><div className="kpi-delta">▲ 12 this quarter</div></div>
+      <div className="kpi-card green"><div className="kpi-value">$4.2M</div><div className="kpi-label">Capital Matched</div><div className="kpi-delta">▲ $680K this quarter</div></div>
+      <div className="kpi-card amber"><div className="kpi-value">23</div><div className="kpi-label">Countries</div><div className="kpi-delta">Africa · SE Asia · Pacific</div></div>
+      <div className="kpi-card"><div className="kpi-value">78%</div><div className="kpi-label">Avg AI Match Score</div><div className="kpi-delta">Stage O1 indicative</div></div>
+    </div>
+    <div className="two-col">
+      <div className="card">
+        <div className="card-title">🌍 Active Projects by Region</div>
+        <table>
+          <thead><tr><th>Region</th><th>Projects</th><th>Deployed</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Sub-Saharan Africa</td><td>58</td><td>$1.9M</td><td><Status type="funded" label="Active"/></td></tr>
+            <tr><td>Southeast Asia</td><td>34</td><td>$1.1M</td><td><Status type="funded" label="Active"/></td></tr>
+            <tr><td>South Asia</td><td>21</td><td>$0.8M</td><td><Status type="matched" label="Growing"/></td></tr>
+            <tr><td>Pacific Islands</td><td>9</td><td>$0.3M</td><td><Status type="review" label="Onboarding"/></td></tr>
+            <tr><td>Caribbean</td><td>5</td><td>$0.1M</td><td><Status type="pending" label="Pipeline"/></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="card">
+        <div className="card-title">⚡ Technology Breakdown</div>
+        <table>
+          <thead><tr><th>Technology</th><th>Projects</th><th>Avg Score</th></tr></thead>
+          <tbody>
+            {[['Solar PV',41,85],['Blue Carbon / Mangrove',22,79],['Climate-Resilient Agri',28,74],['Wind Energy',18,70],['Waste-to-Energy',11,66],['Early Warning / Adapt.',7,72]].map(([t,n,s])=>(
+              <tr key={t}><td>{t}</td><td>{n}</td><td><ScoreBar score={s}/></td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div className="card">
+      <div className="card-title">🔗 How GreenImpact Connect Works</div>
+      <div className="flow">
+        {[
+          {n:'①',l:'Project registers & uploads IP/tech docs',cls:'done'},
+          null,
+          {n:'②',l:'AI Stage O1: Quick indicative match (~10 min)',cls:'done'},
+          null,
+          {n:'③',l:'Investor expresses interest (score ≥70%)',cls:'active-step'},
+          null,
+          {n:'④',l:'AI Stage O2: Verified profile + evidence review',cls:''},
+          null,
+          {n:'⑤',l:'Smart contract on Stellar — results-based tranches',cls:''},
+        ].map((s,i)=>s===null
+          ? <div key={i} className="flow-arrow">→</div>
+          : <div key={i} className={`flow-step ${s.cls}`}><span className="flow-num">{s.n}</span>{s.l}</div>
+        )}
+      </div>
+      <div style={{marginTop:12,textAlign:'center'}}>
+        <button className="btn btn-teal" onClick={()=>goTo('registry')}>View Project Registry →</button>
+        &nbsp;&nbsp;
+        <button className="btn btn-green" onClick={()=>goTo('matching')}>Run AI Match →</button>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── REGISTER PROJECT MODAL ───────────────────────────────────────────────────
+const EMPTY_FORM = {name:'',country:'Kenya',tech:'Solar PV',capital:'',description:''};
+
+const RegisterModal = ({onClose, onSave}) => {
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [saved, setSaved] = useState(false);
+
+  const set = (k,v) => setForm(f=>({...f,[k]:v}));
+  const valid = form.name.trim() && form.capital.trim();
+
+  const handleSave = () => {
+    if(!valid) return;
+    const flag = COUNTRY_FLAGS[form.country] || '🌍';
+    const id = genId(form.country);
+    onSave({
+      id, name:form.name.trim(), country:form.country, flag,
+      tech:form.tech, capital:`$${form.capital.replace(/[^0-9]/g,'')}`,
+      score: Math.floor(Math.random()*15)+60, // indicative O1 score pending full assessment
+      status:'pending', statusLabel:'Registered'
+    });
+    setSaved(true);
+  };
+
+  return (
+    <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="modal">
+        {saved ? (
+          <div style={{textAlign:'center',padding:'16px 0'}}>
+            <div style={{fontSize:48,marginBottom:12}}>✅</div>
+            <div style={{fontSize:17,fontWeight:700,color:'var(--gn)',marginBottom:6}}>Project Registered</div>
+            <div style={{fontSize:13,color:'var(--gr)',marginBottom:20}}>Your project has been added to the registry. An AI indicative match score will be assigned once the onboarding form is completed.</div>
+            <button className="btn btn-teal" onClick={onClose}>Back to Registry</button>
+          </div>
+        ) : (
+          <>
+            <div className="modal-title">Register New Project</div>
+            <div className="modal-sub">Enter project details. A Stellar contract ID will be auto-assigned on submission.</div>
+            <div className="form-grid">
+              <div className="form-field full">
+                <label className="form-label">Project Name *</label>
+                <input className="form-input" placeholder="e.g. Nairobi Community Solar Hub"
+                  value={form.name} onChange={e=>set('name',e.target.value)}/>
+              </div>
+              <div className="form-field">
+                <label className="form-label">Country *</label>
+                <select className="form-select" value={form.country} onChange={e=>set('country',e.target.value)}>
+                  {Object.keys(COUNTRY_FLAGS).map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="form-field">
+                <label className="form-label">Technology Type *</label>
+                <select className="form-select" value={form.tech} onChange={e=>set('tech',e.target.value)}>
+                  {TECH_OPTIONS.map(t=><option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="form-field">
+                <label className="form-label">Capital Required (USD) *</label>
+                <input className="form-input" placeholder="e.g. 75000"
+                  value={form.capital} onChange={e=>set('capital',e.target.value)}/>
+              </div>
+              <div className="form-field">
+                <label className="form-label">Project Stage</label>
+                <select className="form-select">
+                  <option>Early Development</option><option>Feasibility Complete</option>
+                  <option>Ready for Finance</option><option>Operational</option>
+                </select>
+              </div>
+              <div className="form-field full">
+                <label className="form-label">Brief Description</label>
+                <input className="form-input" placeholder="One-line description of the project..."
+                  value={form.description} onChange={e=>set('description',e.target.value)}/>
+              </div>
+              <div className="form-note">
+                ℹ️ A Stellar contract ID (e.g. SC-KE-2026-xxxx) will be auto-generated. AI Stage O1 indicative match score runs automatically within 10 minutes of registration.
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn-ghost" onClick={onClose}>Cancel</button>
+              <button className="btn btn-green" onClick={handleSave}
+                style={{opacity:valid?1:.5,cursor:valid?'pointer':'not-allowed'}}>
+                Register Project
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ─── SCREEN 2: PROJECT REGISTRY ───────────────────────────────────────────────
+const Registry = ({projects, onAdd}) => {
+  const [query, setQuery] = useState('');
+  const [techFilter, setTechFilter] = useState('All Technologies');
+  const [statusFilter, setStatusFilter] = useState('All Statuses');
+  const [showModal, setShowModal] = useState(false);
+
+  const filtered = useMemo(() => projects.filter(p => {
+    const q = query.toLowerCase();
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q) || p.tech.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
+    const matchT = techFilter === 'All Technologies' || p.tech === techFilter;
+    const matchS = statusFilter === 'All Statuses' || p.statusLabel.toLowerCase().includes(statusFilter.toLowerCase());
+    return matchQ && matchT && matchS;
+  }), [projects, query, techFilter, statusFilter]);
+
+  const clear = () => { setQuery(''); setTechFilter('All Technologies'); setStatusFilter('All Statuses'); };
+
+  const handleSave = (proj) => { onAdd(proj); };
+
+  return (
+    <div>
+      {showModal && <RegisterModal onClose={()=>setShowModal(false)} onSave={p=>{handleSave(p);}}/>}
+      <div className="page-title">Project &amp; IP Registry</div>
+      <div className="page-sub">Registered climate projects and IP assets | Stellar contract IDs | {projects.length} projects total</div>
+
+      <div className="search-bar">
+        <input className="search-input" placeholder="Search by name, country, technology or contract ID..."
+          value={query} onChange={e=>setQuery(e.target.value)}/>
+        <select className="filter-select" value={techFilter} onChange={e=>setTechFilter(e.target.value)}>
+          {TECHS.map(t=><option key={t}>{t}</option>)}
+        </select>
+        <select className="filter-select" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+          {STATUSES.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <button className="btn btn-teal" onClick={clear}>Clear</button>
+        <button className="btn btn-green" onClick={()=>setShowModal(true)}>+ Register Project</button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">
+          🗂️ Project Registry
+          <span style={{marginLeft:'auto',fontSize:12,color:'var(--gr)',fontWeight:400}}>
+            Showing {filtered.length} of {projects.length} projects
+          </span>
+        </div>
+        {filtered.length === 0
+          ? <div className="no-results">No projects match your filters. <span style={{color:'var(--md)',cursor:'pointer'}} onClick={clear}>Clear filters</span></div>
+          : <table>
+              <thead>
+                <tr>
+                  <th>Contract ID</th><th>Project Name</th><th>Country</th>
+                  <th>Technology</th><th>Capital</th><th>Match Score</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(p=>(
+                  <tr key={p.id}>
+                    <td style={{fontFamily:'monospace',fontSize:11.5,color:'var(--md)'}}>{p.id}</td>
+                    <td><strong>{p.name}</strong></td>
+                    <td>{p.flag} {p.country}</td>
+                    <td><span className="tag">{p.tech}</span></td>
+                    <td>{p.capital}</td>
+                    <td>{p.status==='pending'
+                      ? <span style={{fontSize:11,color:'var(--gr)'}}>Pending O1</span>
+                      : <ScoreBar score={p.score}/>}
+                    </td>
+                    <td><Status type={p.status} label={p.statusLabel}/></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+        }
+      </div>
+    </div>
+  );
+};
+
+// ─── SCREEN 3: INVESTOR DASHBOARD ────────────────────────────────────────────
+const InvestorDashboard = () => (
+  <div>
+    <div className="page-title">Investor Dashboard</div>
+    <div className="page-sub">Portfolio view for registered climate finance investors</div>
+    <div className="inv-card">
+      <div className="inv-name">Climate Impact Fund III</div>
+      <div className="inv-meta">Blended Finance Vehicle | Luxembourg | Active since Q1 2025</div>
+      <div className="crit-grid">
+        {[
+          ['Geography','Sub-Saharan Africa, SE Asia'],
+          ['Technologies','Solar PV, Blue Carbon, Wind'],
+          ['Ticket Size','$50K – $500K'],
+          ['Risk Appetite','Moderate (3/5)'],
+          ['Impact Focus','Jobs, CO₂ reduction, Gender'],
+          ['Blended Finance','Yes – concessional tranche'],
+        ].map(([l,v])=>(
+          <div key={l} className="crit-item"><div className="crit-label">{l}</div><div className="crit-val">{v}</div></div>
+        ))}
+      </div>
+    </div>
+    <div className="two-col">
+      <div className="card">
+        <div className="card-title">🎯 Top AI-Matched Projects</div>
+        <table>
+          <thead><tr><th>Project</th><th>Country</th><th>Score</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kisumu Solar Hub</strong></td><td>🇰🇪 Kenya</td><td><ScoreBar score={87}/></td><td><Status type="funded" label="Active ✓"/></td></tr>
+            <tr><td><strong>Rajasthan Solar</strong></td><td>🇮🇳 India</td><td><ScoreBar score={85}/></td><td><Status type="matched" label="Matched"/></td></tr>
+            <tr><td><strong>Bohol Mangrove</strong></td><td>🇵🇭 Philippines</td><td><ScoreBar score={81}/></td><td><Status type="review" label="In Review"/></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="card">
+        <div className="card-title">💰 Portfolio Summary</div>
+        <table>
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            {[
+              ['Total Committed','$268,750'],['Disbursed to Date','$93,750'],
+              ['Active Contracts','3'],['Avg Match Score','84%'],
+              ['CO₂ Avoided (est.)','1,240 tCO₂e'],['Jobs Created','47'],
+            ].map(([k,v])=><tr key={k}><td>{k}</td><td><strong>{v}</strong></td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── SCREEN 4: AI MATCHING ENGINE ────────────────────────────────────────────
+const MatchingEngine = () => {
+  const [selectedProject, setSelectedProject] = useState('SC-KE-2026-0041');
+  const proj = SEED_PROJECTS.find(p=>p.id===selectedProject);
+
+  const attrs = [
+    {key:'I1/P1',label:'Geography',inv:'Sub-Saharan Africa',proj:'Kenya ✓',score:100},
+    {key:'I2/P2',label:'Technology',inv:'Solar PV',proj:'Solar PV ✓',score:100},
+    {key:'I3/P3',label:'Ticket size',inv:'$50K–$500K',proj:'$75K ✓',score:95},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',proj:'Low-Mod (2)',score:80},
+    {key:'I5/P5',label:'Impact metrics',inv:'Jobs, CO₂',proj:'Jobs, CO₂ ✓',score:92},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',proj:'Yes ✓',score:100},
+    {key:'I7/P7',label:'Co-investment',inv:'Preferred',proj:'Available ✓',score:90},
+    {key:'I8/P8',label:'Timeline',inv:'3–5 years',proj:'4 years ✓',score:85},
+  ];
+
+  return (
+    <div>
+      <div className="page-title">AI Matching Engine</div>
+      <div className="page-sub">Two-stage compatibility scoring — Stage O1 indicative (seconds), Stage O2 verified (evidence-based)</div>
+      <div className="card" style={{marginBottom:18}}>
+        <div className="card-title">ℹ️ What the AI Matching Engine Does</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18}}>
+          <div>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--md)',marginBottom:8}}>Stage O1 — Indicative Score (runs in seconds)</div>
+            <div style={{fontSize:12.5,color:'var(--bk)',lineHeight:1.65}}>
+              The engine compares 8 investor criteria against 8 matching project attributes. Each pair is scored 0-100% and multiplied by its assigned weight. The composite weighted score tells an investor, at a glance, how well a project fits their mandate — without any manual review required.
+            </div>
+          </div>
+          <div>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--gn)',marginBottom:8}}>Stage O2 — Verified Match (triggered at score 70% or above)</div>
+            <div style={{fontSize:12.5,color:'var(--bk)',lineHeight:1.65}}>
+              When an investor expresses interest in a project that passed the O1 threshold, Stage O2 launches automatically. The project developer is asked to upload verified evidence documents — engineering reports, land rights, MRV baseline data. The engine cross-checks these against the investor's stated requirements before recommending final commitment.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="info-banner">
+        Stage O2 is triggered automatically when an investor expresses interest AND Stage O1 score is 70% or above. Evidence uploads are requested from the project developer.
+      </div>
+      <div className="two-col">
+        <div className="card">
+          <div className="card-title"><span className="s-pill o1">Stage O1</span>&nbsp; Investor Attributes (I1–I8)</div>
+          <div className="attr-grid">
+            {[['I1','Geographic focus','15%'],['I2','Technology preference','15%'],['I3','Ticket size (min/max)','12%'],['I4','Risk appetite (1–5)','12%'],
+              ['I5','Impact metrics priority','14%'],['I6','Blended finance willing','10%'],['I7','Co-investment preference','10%'],['I8','Timeline / exit horizon','12%']
+            ].map(([k,l,w])=>(
+              <div key={k} className="attr-row"><span className="attr-key">{k}</span><span className="attr-val">{l}</span><span className="attr-w">{w}</span></div>
+            ))}
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title"><span className="s-pill o1">Stage O1</span>&nbsp; Project Attributes (P1–P8)</div>
+          <div className="attr-grid">
+            {[['P1','Country / region','15%'],['P2','Technology type','15%'],['P3','Capital requirement','12%'],['P4','Risk profile (1–5)','12%'],
+              ['P5','Impact metrics delivered','14%'],['P6','Blended finance components','10%'],['P7','Co-investment available','10%'],['P8','Timeline to completion','12%']
+            ].map(([k,l,w])=>(
+              <div key={k} className="attr-row"><span className="attr-key">{k}</span><span className="attr-val">{l}</span><span className="attr-w">{w}</span></div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">
+          🎯 Live Match: Climate Impact Fund III ×&nbsp;
+          <select value={selectedProject} onChange={e=>setSelectedProject(e.target.value)}
+            style={{border:'1.5px solid var(--lt)',borderRadius:6,padding:'3px 8px',fontSize:12,color:'var(--dk)',background:'#fff'}}>
+            {SEED_PROJECTS.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+        </div>
+        <div className="two-col" style={{alignItems:'center'}}>
+          <table>
+            <thead><tr><th>Attribute</th><th>Investor</th><th>Project</th><th>Score</th></tr></thead>
+            <tbody>
+              {attrs.map(a=>(
+                <tr key={a.key}>
+                  <td><strong>{a.key}</strong> {a.label}</td>
+                  <td style={{fontSize:11.5}}>{a.inv}</td>
+                  <td style={{fontSize:11.5}}>{a.proj}</td>
+                  <td style={{color:a.score>=90?'var(--gn)':'var(--md)',fontWeight:700}}>{a.score}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div>
+            <div className="match-result">
+              <div style={{fontSize:13,opacity:.8,marginBottom:6}}>WEIGHTED MATCH SCORE</div>
+              <div className="match-score-big">{proj.score}%</div>
+              <div className="match-label">Stage O1 — Indicative</div>
+              <div className="match-gate gate-ok" style={{marginTop:10}}>✓ Score ≥70% threshold met</div>
+              <div className="match-gate gate-ok" style={{marginTop:6}}>✓ Stage O2 Verified Match triggered</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title"><span className="s-pill o2">Stage O2</span>&nbsp; Verified Match — Evidence Checklist</div>
+        <div className="warn-banner">Stage O2 triggered. Project developer notified to upload verified evidence documents.</div>
+        <table>
+          <thead><tr><th>Evidence Type</th><th>Requirement</th><th>Status</th></tr></thead>
+          <tbody>
+            {[
+              ['Technical feasibility report','Engineer-certified','funded','Uploaded ✓'],
+              ['Land rights / permits','Government issued','funded','Uploaded ✓'],
+              ['Community consent letter','Signed','funded','Uploaded ✓'],
+              ['MRV baseline data','Third-party verified','review','Under Review'],
+              ['Financial projections','Audited','pending','Pending'],
+            ].map(([e,r,s,l])=><tr key={e}><td>{e}</td><td>{r}</td><td><Status type={s} label={l}/></td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// ─── SCREEN 5: DLT DISBURSEMENT ──────────────────────────────────────────────
+const DLT = () => (
+  <div>
+    <div className="page-title">DLT Disbursement — Stellar Network</div>
+    <div className="page-sub">Verified, trustless payment release — no bank intermediary, no disputed approvals</div>
+
+    <div className="card" style={{marginBottom:18}}>
+      <div className="card-title">ℹ️ What DLT Disbursement Means</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16}}>
+        <div>
+          <div style={{fontWeight:700,fontSize:12.5,color:'var(--md)',marginBottom:6}}>What is Stellar?</div>
+          <div style={{fontSize:12,color:'var(--bk)',lineHeight:1.6}}>Stellar is a public blockchain network designed for cross-border financial transactions. GreenImpact Connect deploys a Soroban smart contract on Stellar for each funded project. Funds are held in USDC (a regulated digital dollar) and released automatically when conditions are met.</div>
+        </div>
+        <div>
+          <div style={{fontWeight:700,fontSize:12.5,color:'var(--md)',marginBottom:6}}>What is a Smart Contract?</div>
+          <div style={{fontSize:12,color:'var(--bk)',lineHeight:1.6}}>A smart contract is a self-executing agreement written directly in code. The contract specifies: how much to pay, to whom, and under exactly what conditions. Once deployed, it runs automatically — no bank, no intermediary, and no manual approval can delay or redirect the payment.</div>
+        </div>
+        <div>
+          <div style={{fontWeight:700,fontSize:12.5,color:'var(--md)',marginBottom:6}}>What is dMRV?</div>
+          <div style={{fontSize:12,color:'var(--bk)',lineHeight:1.6}}>Digital Measurement, Reporting and Verification. IoT sensors or satellite data feed a verified oracle that checks whether the project hit its milestone — for example, whether a solar installation generated the minimum required kilowatt-hours in the reporting month. The oracle's confirmation triggers the tranche release.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style={{display:'flex',alignItems:'flex-start',gap:20,marginBottom:20}}>
+      <div style={{textAlign:'center'}}>
+        <div style={{fontSize:44}}>✅</div>
+        <Status type="success" label="SUCCESS"/>
+      </div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:17,fontWeight:800,color:'var(--dk)'}}>Tranche 2 of 4 Released — Kisumu Solar Hub, Kenya</div>
+        <div style={{fontSize:12.5,color:'var(--gr)',marginTop:3}}>Contract SC-KE-2026-0041 | Climate Impact Fund III → Kisumu Solar Cooperative</div>
+        <div className="tranche-track" style={{marginTop:10}}>
+          <div className="tr-item done">T1<br/><small>$18,750<br/>✓ Paid</small></div>
+          <div className="tr-item now">T2<br/><small>$18,750<br/>⬤ Now</small></div>
+          <div className="tr-item wait">T3<br/><small>$18,750<br/>Pending</small></div>
+          <div className="tr-item wait">T4<br/><small>$18,750<br/>Pending</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div className="two-col">
+      <div className="card">
+        <div className="card-title">🔗 Stellar Transaction Record</div>
+        <div className="tx-grid">
+          {[
+            ['Transaction Hash','9f3ac8e21b7d4f06a5c1e8b2d7f4a9c3e6b1d8f5a2c7e4b9d1f6a3c8e5b2d7f4a9c1',true],
+            ['Stellar Ledger','#52,847,119',true],
+            ['Timestamp','2026-11-03T13:42:17Z',false],
+            ['Status','SUCCESS',false],
+            ['Amount','18,750 USDC',false],
+            ['Asset','USDC (Circle / Stellar)',false],
+            ['Source (DTID)','GDTID7KQ4XM2VP9ARCFNLWEHB3SJY6TUD5GZO8CPX1MEQ',true],
+            ['Destination','GNBWCOOP3XR7KT2VF9ALMQWESH4BDY8NUJ6CZP5GE1TAO',true],
+            ['Smart Contract','SC-KE-2026-0041',true],
+            ['Protocol','Stellar Mainnet / Soroban',false],
+          ].map(([k,v,mono])=>(
+            <React.Fragment key={k}>
+              <div className="tx-key">{k}</div>
+              <div className={`tx-val${mono?' tx-mono':''}`}>{v}</div>
+            </React.Fragment>
+          ))}
+        </div>
+        <div style={{marginTop:12,padding:'9px 12px',background:'var(--xlt)',borderRadius:6,fontSize:12}}>
+          <strong>On-chain:</strong> Commitment, oracle proof hash, state transition, value transfer<br/>
+          <span style={{color:'var(--gr)'}}><strong>Off-chain:</strong> Full MRV records, personal data, raw IoT logs (hashes only on-chain)</span>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">🔬 dMRV Oracle Trigger Conditions</div>
+        <div style={{fontSize:12,color:'var(--gr)',marginBottom:10}}>All 6 conditions verified before Tranche 2 release</div>
+        {[
+          ['Data source','Kisumu Solar Hub IoT energy meter (certified)'],
+          ['Metric','Monthly generation ≥ 500 kWh'],
+          ['Achieved','623 kWh (Oct 2026) — threshold exceeded'],
+          ['Window','30-day measurement period (1–31 Oct 2026)'],
+          ['Verification','Oracle consensus — 3/3 validators confirmed'],
+          ['Contract state','TRANCHE_2_TRIGGER → SUCCESS'],
+        ].map(([k,v])=>(
+          <div key={k} className="oracle-row">
+            <span className="oracle-check">✓</span>
+            <div><strong>{k}:</strong> {v}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="card">
+      <div className="card-title">📋 Smart Contract Lifecycle — SC-KE-2026-0041</div>
+      <table>
+        <thead><tr><th>State</th><th>Date</th><th>Trigger Condition</th><th>Amount</th><th>Stellar Ledger</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><Status type="funded" label="TRANCHE_1_PAID"/></td>
+            <td>2026-09-15</td><td>Project commissioning verified</td><td>$18,750 USDC</td>
+            <td style={{fontFamily:'monospace',fontSize:11}}>#51,203,447</td>
+          </tr>
+          <tr style={{background:'var(--xlt)'}}>
+            <td><Status type="funded" label="TRANCHE_2_PAID"/></td>
+            <td>2026-11-03</td><td>623 kWh generated (Oct) ≥ 500 kWh</td><td>$18,750 USDC</td>
+            <td style={{fontFamily:'monospace',fontSize:11}}>#52,847,119</td>
+          </tr>
+          <tr>
+            <td><Status type="pending" label="TRANCHE_3_PENDING"/></td>
+            <td>Dec 2026</td><td>Awaiting Nov MRV oracle data</td><td>$18,750 USDC</td>
+            <td style={{fontFamily:'monospace',fontSize:11,color:'var(--gr)'}}>—</td>
+          </tr>
+          <tr>
+            <td><Status type="pending" label="TRANCHE_4_PENDING"/></td>
+            <td>Jan 2027</td><td>Awaiting Dec MRV + final audit</td><td>$18,750 USDC</td>
+            <td style={{fontFamily:'monospace',fontSize:11,color:'var(--gr)'}}>—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style={{marginTop:12,padding:'9px 13px',background:'var(--lt)',borderRadius:6,fontSize:12.5,color:'var(--dk)'}}>
+        <strong>Total contract:</strong> $75,000 USDC &nbsp;|&nbsp; <strong>Disbursed:</strong> $37,500 (50%) &nbsp;|&nbsp; <strong>Remaining:</strong> $37,500 &nbsp;|&nbsp; <strong>Network:</strong> Stellar Mainnet
+      </div>
+    </div>
+  </div>
+);
+
+// ─── ZOOM STAGE CONFIG ───────────────────────────────────────────────────────
+const ZOOM_SEQUENCE = [
+  { id:'registry',  label:'Project Registration',    n:1, icon:'📋' },
+  { id:'matching',  label:'AI Matching Engine',       n:2, icon:'🤖' },
+  { id:'investor',  label:'Investor Review',          n:3, icon:'💼' },
+  { id:'dlt',       label:'DLT Disbursement',         n:4, icon:'⛓️' },
+];
+
+// ─── ZOOM OVERLAY ─────────────────────────────────────────────────────────────
+const ZoomOverlay = ({screenId, onClose, onNav, projects, addProject}) => {
+  const idx = ZOOM_SEQUENCE.findIndex(s=>s.id===screenId);
+  const current = ZOOM_SEQUENCE[idx] || ZOOM_SEQUENCE[0];
+  const [animClass, setAnimClass] = useState('zoom-enter');
+  const [slideClass, setSlideClass] = useState('screen-slide-in');
+  const contentRef = useRef(null);
+
+  // Keyboard: Escape = close, ArrowLeft/Right = navigate
+  useEffect(()=>{
+    const handler = (e)=>{
+      if(e.key==='Escape'){ onClose(); }
+      if(e.key==='ArrowRight' && idx < ZOOM_SEQUENCE.length-1){ onNav(ZOOM_SEQUENCE[idx+1].id,'fwd'); }
+      if(e.key==='ArrowLeft'  && idx > 0)                     { onNav(ZOOM_SEQUENCE[idx-1].id,'back'); }
+    };
+    window.addEventListener('keydown', handler);
+    return ()=>window.removeEventListener('keydown', handler);
+  }, [idx]);
+
+  const navigate = (targetId, dir) => {
+    setSlideClass(dir==='fwd'?'screen-slide-in':'screen-slide-back');
+    if(contentRef.current) contentRef.current.scrollTop = 0;
+    onNav(targetId, dir);
+  };
+
+  const renderScreen = () => {
+    switch(screenId) {
+      case 'registry': return <Registry projects={projects} onAdd={addProject}/>;
+      case 'investor': return <InvestorDashboard/>;
+      case 'matching': return <MatchingEngine/>;
+      case 'dlt':      return <DLT/>;
+    }
+  };
+
+  return (
+    <div className={`zoom-overlay ${animClass}`}>
+      {/* Top nav bar */}
+      <div className="zoom-bar">
+        <button className="zoom-back-btn" onClick={onClose}>
+          ✕ &nbsp;Overview
+        </button>
+        <div style={{width:1,height:24,background:'rgba(255,255,255,.15)'}}/>
+        <div style={{textAlign:'center'}}>
+          <div style={{fontSize:13,fontWeight:700,color:'#fff'}}>{current.icon} &nbsp;Stage {current.n} — {current.label}</div>
+          <div style={{fontSize:10,opacity:.5,fontFamily:'Consolas,monospace',letterSpacing:.5}}>ESC to return · ← → to navigate</div>
+        </div>
+        <div style={{flex:1}}/>
+        {/* Step dots */}
+        <div className="zoom-dots">
+          {ZOOM_SEQUENCE.map((s,i)=>(
+            <div key={s.id} className={`zoom-dot${i===idx?' on':''}`} title={s.label}
+              onClick={()=>navigate(s.id, i>idx?'fwd':'back')}/>
+          ))}
+        </div>
+        <div className="zoom-nav-btns">
+          <button className="zoom-nav-btn"
+            onClick={()=>navigate(ZOOM_SEQUENCE[idx-1].id,'back')}
+            disabled={idx===0}>
+            ← {idx>0?ZOOM_SEQUENCE[idx-1].icon+' '+ZOOM_SEQUENCE[idx-1].label:''}
+          </button>
+          <button className="zoom-nav-btn next"
+            onClick={()=>navigate(ZOOM_SEQUENCE[idx+1].id,'fwd')}
+            disabled={idx===ZOOM_SEQUENCE.length-1}>
+            {idx<ZOOM_SEQUENCE.length-1?ZOOM_SEQUENCE[idx+1].icon+' '+ZOOM_SEQUENCE[idx+1].label:''} →
+          </button>
+        </div>
+        <div style={{width:1,height:24,background:'rgba(255,255,255,.15)'}}/>
+        <span className="zoom-key-hint">Stage {idx+1}/{ZOOM_SEQUENCE.length}</span>
+      </div>
+      {/* Screen content */}
+      <div className={`zoom-content ${slideClass}`} ref={contentRef} key={screenId}>
+        {renderScreen()}
+      </div>
+    </div>
+  );
+};
+
+// ─── APP SHELL ────────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { id:'home',      label:'Platform Overview',      icon:'🏠', section:'Start Here' },
+  { id:'dashboard', label:'Portfolio Dashboard',    icon:'📊', section:'Platform' },
+  { id:'registry',  label:'Project & IP Registry',  icon:'🗂️', section:'Registry' },
+  { id:'investor',  label:'Investor Dashboard',     icon:'💼', section:'Finance' },
+  { id:'matching',  label:'AI Matching Engine',     icon:'🤖', section:'Intelligence' },
+  { id:'dlt',       label:'DLT Disbursement',       icon:'⛓️', section:'Settlement' },
+];
+
+function App() {
+  const [active, setActive]   = useState('home');
+  const [zoomed, setZoomed]   = useState(null);   // screen ID being zoomed, or null
+  const [projects, setProjects] = useState(SEED_PROJECTS);
+  let lastSection = null;
+
+  const addProject = (p) => setProjects(prev => [p, ...prev]);
+
+  const zoomTo  = (screenId) => setZoomed(screenId);
+  const closeZoom = () => setZoomed(null);
+  const navZoom = (screenId) => setZoomed(screenId);
+
+  const renderMain = () => {
+    switch(active) {
+      case 'home':      return <HomeScreen goTo={setActive} zoomTo={zoomTo} projectCount={projects.length}/>;
+      case 'dashboard': return <Dashboard goTo={setActive} projectCount={projects.length}/>;
+      case 'registry':  return <Registry projects={projects} onAdd={addProject}/>;
+      case 'investor':  return <InvestorDashboard/>;
+      case 'matching':  return <MatchingEngine/>;
+      case 'dlt':       return <DLT/>;
+    }
+  };
+
+  return (
+    <>
+      <header>
+        <div className="logo">
+          <div className="logo-icon">🌿</div>
+          <div>
+            <div className="logo-text">GreenImpact Connect</div>
+            <div className="logo-sub">AI-POWERED CLIMATE FINANCE MATCHING</div>
+          </div>
+        </div>
+        <div className="header-right">
+          Digital Technology Institute for Development<br/>
+          <span className="badge">PROTOTYPE v0.2 — COP31 DEMO</span>
+        </div>
+      </header>
+
+      <div className="app">
+        <nav>
+          {NAV_ITEMS.map(item => {
+            const showSection = item.section !== lastSection;
+            lastSection = item.section;
+            return (
+              <React.Fragment key={item.id}>
+                {showSection && <div className="nav-section">{item.section}</div>}
+                <div className={`nav-item ${active===item.id?'active':''}`} onClick={()=>setActive(item.id)}>
+                  <span className="nav-icon">{item.icon}</span>
+                  <span style={{flex:1}}>{item.label}</span>
+                  {item.id==='registry' && <span className="nav-badge">{projects.length}</span>}
+                </div>
+              </React.Fragment>
+            );
+          })}
+        </nav>
+        <main>{renderMain()}</main>
+      </div>
+
+      <footer>
+        <span>GreenImpact Connect v0.2 | DTID Emerging Technology Division</span>
+        <span>Prototype — COP31 · WIPO Partnership Demo, Antalya 9 Nov 2026 | Not for public distribution</span>
+      </footer>
+
+      {/* ZOOM OVERLAY — renders on top of everything */}
+      {zoomed && (
+        <ZoomOverlay
+          screenId={zoomed}
+          onClose={closeZoom}
+          onNav={navZoom}
+          projects={projects}
+          addProject={addProject}
+        />
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
