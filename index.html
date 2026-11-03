@@ -200,12 +200,14 @@ const { useState, useMemo, useEffect, useRef } = React;
 
 // ─── SEED DATA ───────────────────────────────────────────────────────────────
 const SEED_PROJECTS = [
-  { id:'SC-KE-2026-0041', name:'Kisumu Solar Hub',          country:'Kenya',       flag:'🇰🇪', tech:'Solar PV',              capital:'$75,000',  score:87, status:'funded',  statusLabel:'Funded (T2/4)' },
-  { id:'SC-IN-2026-0008', name:'Rajasthan Solar Irrigation', country:'India',       flag:'🇮🇳', tech:'Solar PV',              capital:'$120,000', score:85, status:'funded',  statusLabel:'Funded (T1/3)' },
-  { id:'SC-PH-2026-0033', name:'Bohol Mangrove Restoration', country:'Philippines', flag:'🇵🇭', tech:'Blue Carbon',           capital:'$95,000',  score:81, status:'matched', statusLabel:'Matched' },
-  { id:'SC-RW-2026-0019', name:'Rwanda Cold Chain Network',  country:'Rwanda',      flag:'🇷🇼', tech:'Climate-Resilient Agri',capital:'$60,000',  score:73, status:'review',  statusLabel:'In Review' },
-  { id:'SC-GH-2026-0027', name:'Accra Urban Wind',           country:'Ghana',       flag:'🇬🇭', tech:'Wind Energy',           capital:'$200,000', score:69, status:'pending', statusLabel:'Pipeline' },
-  { id:'SC-NG-2026-0052', name:'Lagos Waste-to-Energy',      country:'Nigeria',     flag:'🇳🇬', tech:'Waste-to-Energy',       capital:'$340,000', score:64, status:'matched', statusLabel:'Matched' },
+  { id:'SC-KE-2026-0041', name:'Kisumu Solar Hub',          country:'Kenya',       flag:'🇰🇪', tech:'Solar PV',              capital:'$75,000',  score:87, status:'funded',  statusLabel:'Funded (T2/4)', sdgs:['SDG 7','SDG 13'],           co2:'340 tCO₂e/yr', ipRef:'Distributed renewables (#147587)',          ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/147587' },
+  { id:'SC-IN-2026-0008', name:'Rajasthan Solar Irrigation', country:'India',       flag:'🇮🇳', tech:'Solar PV',              capital:'$120,000', score:85, status:'funded',  statusLabel:'Funded (T1/3)', sdgs:['SDG 7','SDG 13','SDG 8'],    co2:'520 tCO₂e/yr', ipRef:'Modular solar systems (#149356)',            ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/149356' },
+  { id:'SC-PH-2026-0033', name:'Bohol Mangrove Restoration', country:'Philippines', flag:'🇵🇭', tech:'Blue Carbon',           capital:'$95,000',  score:81, status:'matched', statusLabel:'Matched',        sdgs:['SDG 14','SDG 15','SDG 13'], co2:'210 tCO₂e/yr', ipRef:'Blue carbon ecosystem program (#178442)',    ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/178442' },
+  { id:'SC-RW-2026-0019', name:'Rwanda Cold Chain Network',  country:'Rwanda',      flag:'🇷🇼', tech:'Climate-Resilient Agri',capital:'$60,000',  score:73, status:'review',  statusLabel:'In Review',      sdgs:['SDG 8','SDG 13'],           co2:'95 tCO₂e/yr',  ipRef:'Cold Storage Box Portable (#172222)',        ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/172222' },
+  { id:'SC-GH-2026-0027', name:'Accra Urban Wind',           country:'Ghana',       flag:'🇬🇭', tech:'Wind Energy',           capital:'$200,000', score:69, status:'pending', statusLabel:'Pipeline',       sdgs:['SDG 7','SDG 13'],           co2:'180 tCO₂e/yr', ipRef:'AVATAR Small Wind Turbine (#149296)',        ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/149296' },
+  { id:'SC-NG-2026-0052', name:'Lagos Waste-to-Energy',      country:'Nigeria',     flag:'🇳🇬', tech:'Waste-to-Energy',       capital:'$340,000', score:64, status:'matched', statusLabel:'Matched',        sdgs:['SDG 11','SDG 13','SDG 17'], co2:'430 tCO₂e/yr', ipRef:'Biogas to Energy (#23712)',                  ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/23712' },
+  { id:'SC-BD-2026-0011', name:'Sylhet Mini-Grid Network',   country:'Bangladesh',  flag:'🇧🇩', tech:'Solar PV',              capital:'$88,000',  score:62, status:'review',  statusLabel:'In Review',      sdgs:['SDG 7','SDG 1','SDG 13'],   co2:'155 tCO₂e/yr', ipRef:'Mini-grid connection network (#149359)',     ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/149359' },
+  { id:'SC-MZ-2026-0066', name:'Sofala Mangrove Carbon',     country:'Mozambique',  flag:'🇲🇿', tech:'Blue Carbon',           capital:'$110,000', score:58, status:'pending', statusLabel:'Pipeline',       sdgs:['SDG 14','SDG 15','SDG 13'], co2:'275 tCO₂e/yr', ipRef:'Community mangrove replanting (#180071)',    ipUrl:'https://wipogreen.wipo.int/wipogreen-database/articles/180071' },
 ];
 
 const TECH_OPTIONS = ['Solar PV','Blue Carbon','Climate-Resilient Agri','Wind Energy','Waste-to-Energy','Early Warning / Adaptation','Hydro','Geothermal'];
@@ -229,6 +231,9 @@ const ScoreBar = ({score}) => (
   </div>
 );
 const Status = ({type,label}) => <span className={`status ${type}`}><span className="dot"/> {label}</span>;
+
+const SDG_COLORS = {'SDG 7':'#FCC30B','SDG 8':'#A21942','SDG 11':'#FD9D24','SDG 13':'#3F7E44','SDG 14':'#0A97D9','SDG 15':'#56C02B','SDG 17':'#19486A'};
+const SDGBadge = ({sdg}) => <span style={{background:SDG_COLORS[sdg]||'#607D8B',color:'#fff',fontSize:9.5,padding:'2px 5px',borderRadius:3,fontWeight:700,marginRight:2,whiteSpace:'nowrap',display:'inline-block',marginBottom:2}}>{sdg}</span>;
 
 // ─── SCREEN 0: HOME / PLATFORM OVERVIEW ──────────────────────────────────────
 const FLOW_STAGES = [
@@ -255,9 +260,12 @@ const HomeScreen = ({goTo, zoomTo, projectCount}) => (
             <div key={t} style={{background:'rgba(255,255,255,.13)',border:'1px solid rgba(255,255,255,.18)',borderRadius:8,padding:'6px 14px',fontSize:12}}>{t}</div>
           ))}
         </div>
-        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+        <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
           <button className="btn" style={{background:'rgba(255,255,255,.18)',border:'1px solid rgba(255,255,255,.3)',color:'#fff',padding:'8px 20px',fontSize:12.5,fontWeight:700}} onClick={()=>zoomTo('registry')}>
             ▶ Start Demo Tour
+          </button>
+          <button className="btn" style={{background:'rgba(186,117,23,.5)',border:'1px solid rgba(186,117,23,.7)',color:'#fff',padding:'8px 20px',fontSize:12.5,fontWeight:700}} onClick={()=>goTo('roadmap')}>
+            🗺️ Grant Investment Plan
           </button>
           <span style={{fontSize:10.5,opacity:.45,fontFamily:'Consolas,monospace'}}>or click any stage below · press Esc to return</span>
         </div>
@@ -395,11 +403,36 @@ const Dashboard = ({goTo, projectCount}) => (
         <button className="btn btn-green" onClick={()=>goTo('matching')}>Run AI Match →</button>
       </div>
     </div>
+
+    <div className="card">
+      <div className="card-title">🏛️ Platform Governance Model</div>
+      <div style={{fontSize:12,color:'var(--gr)',marginBottom:16}}>Six-layer oversight ensures integrity, accountability, and investor confidence at every stage</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:10}}>
+        {[
+          {n:1, icon:'👩‍💻', label:'Project Developer', detail:'Registers project, uploads IP and MRV baseline documents'},
+          {n:2, icon:'🔍', label:'DTID Review', detail:'Technical and eligibility screening by DTID Emerging Tech team'},
+          {n:3, icon:'🏛️', label:'WIPO Oversight', detail:'IP cross-check against PATENTSCOPE; technology classification'},
+          {n:4, icon:'💼', label:'Investor Approval', detail:'Investor reviews AI match score and expresses Stage O2 interest'},
+          {n:5, icon:'📡', label:'dMRV Oracle', detail:'Independent sensor-based verification of climate impact milestones'},
+          {n:6, icon:'⛓️', label:'Stellar Settlement', detail:'Smart contract automatically releases payment on oracle confirmation'},
+        ].map((g,i,arr)=>(
+          <React.Fragment key={g.n}>
+            <div style={{textAlign:'center',padding:'12px 8px',background:'var(--xlt)',borderRadius:8,border:'1px solid var(--lt)',position:'relative'}}>
+              <div style={{fontSize:22,marginBottom:6}}>{g.icon}</div>
+              <div style={{fontSize:10,fontWeight:700,color:'var(--dk)',marginBottom:4,lineHeight:1.3}}>{g.label}</div>
+              <div style={{fontSize:10,color:'var(--gr)',lineHeight:1.4}}>{g.detail}</div>
+              <div style={{position:'absolute',top:'50%',right:-6,transform:'translateY(-50%)',color:'var(--md)',fontWeight:700,fontSize:13,zIndex:1,display:i<arr.length-1?'block':'none'}}>›</div>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
   </div>
 );
 
 // ─── REGISTER PROJECT MODAL ───────────────────────────────────────────────────
-const EMPTY_FORM = {name:'',country:'Kenya',tech:'Solar PV',capital:'',description:''};
+const SDG_OPTIONS = ['SDG 7','SDG 8','SDG 11','SDG 13','SDG 14','SDG 15','SDG 17'];
+const EMPTY_FORM = {name:'',country:'Kenya',tech:'Solar PV',capital:'',description:'',sdgs:[],ipRef:''};
 
 const RegisterModal = ({onClose, onSave}) => {
   const [form, setForm] = useState(EMPTY_FORM);
@@ -416,7 +449,8 @@ const RegisterModal = ({onClose, onSave}) => {
       id, name:form.name.trim(), country:form.country, flag,
       tech:form.tech, capital:`$${form.capital.replace(/[^0-9]/g,'')}`,
       score: Math.floor(Math.random()*15)+60, // indicative O1 score pending full assessment
-      status:'pending', statusLabel:'Registered'
+      status:'pending', statusLabel:'Registered',
+      sdgs: form.sdgs, co2:'Pending dMRV', ipRef:form.ipRef||'-'
     });
     setSaved(true);
   };
@@ -464,6 +498,23 @@ const RegisterModal = ({onClose, onSave}) => {
                   <option>Early Development</option><option>Feasibility Complete</option>
                   <option>Ready for Finance</option><option>Operational</option>
                 </select>
+              </div>
+              <div className="form-field full">
+                <label className="form-label">SDG Alignment (select all that apply)</label>
+                <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:4}}>
+                  {SDG_OPTIONS.map(s=>(
+                    <label key={s} style={{display:'flex',alignItems:'center',gap:4,fontSize:12,cursor:'pointer',background:form.sdgs.includes(s)?SDG_COLORS[s]:'#f0f0f0',color:form.sdgs.includes(s)?'#fff':'#333',padding:'3px 9px',borderRadius:4,fontWeight:form.sdgs.includes(s)?700:400,transition:'all .15s'}}>
+                      <input type="checkbox" style={{display:'none'}} checked={form.sdgs.includes(s)}
+                        onChange={e=>set('sdgs', e.target.checked ? [...form.sdgs,s] : form.sdgs.filter(x=>x!==s))}/>
+                      {s}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="form-field">
+                <label className="form-label">WIPO PATENTSCOPE Reference (if applicable)</label>
+                <input className="form-input" placeholder="e.g. WO2024/001234 or leave blank"
+                  value={form.ipRef} onChange={e=>set('ipRef',e.target.value)}/>
               </div>
               <div className="form-field full">
                 <label className="form-label">Brief Description</label>
@@ -539,7 +590,7 @@ const Registry = ({projects, onAdd}) => {
               <thead>
                 <tr>
                   <th>Contract ID</th><th>Project Name</th><th>Country</th>
-                  <th>Technology</th><th>Capital</th><th>Match Score</th><th>Status</th>
+                  <th>Technology</th><th>SDG Tags</th><th>AI-Matched WIPO GREEN Tech.</th><th>CO₂ Impact</th><th>Capital</th><th>Match Score</th><th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -549,6 +600,12 @@ const Registry = ({projects, onAdd}) => {
                     <td><strong>{p.name}</strong></td>
                     <td>{p.flag} {p.country}</td>
                     <td><span className="tag">{p.tech}</span></td>
+                    <td style={{minWidth:90}}>{(p.sdgs||[]).map(s=><SDGBadge key={s} sdg={s}/>)}</td>
+                    <td style={{fontSize:10.5}}>{p.ipUrl
+                      ? <a href={p.ipUrl} target="_blank" rel="noopener noreferrer" style={{color:'var(--md)',textDecoration:'none',fontWeight:600}}>{p.ipRef} ↗</a>
+                      : <span style={{color:'#ccc'}}>—</span>}
+                    </td>
+                    <td style={{fontSize:11.5,color:'var(--gn)',fontWeight:600}}>{p.co2||'—'}</td>
                     <td>{p.capital}</td>
                     <td>{p.status==='pending'
                       ? <span style={{fontSize:11,color:'var(--gr)'}}>Pending O1</span>
@@ -616,20 +673,100 @@ const InvestorDashboard = () => (
 );
 
 // ─── SCREEN 4: AI MATCHING ENGINE ────────────────────────────────────────────
+// Weights for each criterion (sum = 100)
+const MATCH_WEIGHTS = [15,15,12,12,14,10,10,12];
+
+// Per-project criteria — each score is calibrated so the weighted composite
+// equals the project's overall match score in SEED_PROJECTS.
+const PROJECT_ATTRS = {
+  'SC-KE-2026-0041': [ // weighted → 87
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Kenya ✓',              score:100},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Solar PV ✓',            score:100},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$75K ✓',                score:87},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'Low-Mod (2)',            score:70},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂, jobs ✓',           score:86},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Grant + DLT ✓',         score:90},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Available ✓',           score:76},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'4 years ✓',             score:80},
+  ],
+  'SC-IN-2026-0008': [ // weighted → 85
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'India (S.Asia) ✓',      score:95},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Solar PV ✓',            score:100},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$120K ✓',               score:85},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'Moderate (3) ✓',        score:72},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂, agri ✓',           score:82},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Grant + DLT ✓',         score:88},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Partial',               score:72},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'3 years ✓',             score:80},
+  ],
+  'SC-PH-2026-0033': [ // weighted → 81
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Philippines (Pacific)',  score:75},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Blue Carbon',           score:68},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$95K ✓',                score:88},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'Moderate (3) ✓',        score:78},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂, biodiversity ✓',  score:88},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Grant + carbon ✓',      score:95},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Available ✓',           score:85},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'5 years ✓',             score:78},
+  ],
+  'SC-RW-2026-0019': [ // weighted → 73
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Rwanda ✓',              score:100},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Agri / Cold Chain',     score:55},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$60K ✓',                score:85},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'Low-Mod (2)',            score:62},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'Food security, CO₂',    score:70},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Partial',               score:65},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Limited',               score:55},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'3 years ✓',             score:82},
+  ],
+  'SC-GH-2026-0027': [ // weighted → 69
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Ghana ✓',               score:88},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Wind energy',           score:82},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$200K ✓',               score:80},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'High (4)',              score:52},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂ only',             score:62},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Partial',               score:72},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Limited',               score:55},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'5-6 years',             score:55},
+  ],
+  'SC-NG-2026-0052': [ // weighted → 64
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Nigeria ✓',             score:88},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Waste-to-Energy',       score:55},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$340K (upper range)',   score:74},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'High (4-5)',            score:41},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂, waste mgmt',      score:66},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Grant + carbon ✓',      score:76},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Available ✓',           score:60},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'6+ years',              score:48},
+  ],
+  'SC-BD-2026-0011': [ // weighted → 62
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Bangladesh (S.Asia)',   score:58},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Solar PV ✓',            score:90},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$88K ✓',                score:72},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'Low-Mod (2)',            score:55},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'Energy access, CO₂',   score:65},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Partial',               score:48},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Limited',               score:38},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'5 years',               score:60},
+  ],
+  'SC-MZ-2026-0066': [ // weighted → 58
+    {key:'I1/P1',label:'Geography',    inv:'Sub-Saharan Africa',proj:'Mozambique ✓',          score:82},
+    {key:'I2/P2',label:'Technology',   inv:'Renewable energy',  proj:'Blue Carbon',           score:58},
+    {key:'I3/P3',label:'Ticket size',  inv:'$50K–$500K',        proj:'$110K ✓',               score:80},
+    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',       proj:'High ecology (4)',      score:40},
+    {key:'I5/P5',label:'Impact metrics',inv:'CO₂, jobs',        proj:'CO₂, biodiversity',    score:76},
+    {key:'I6/P6',label:'Blended finance',inv:'Yes',             proj:'Carbon credits only',   score:44},
+    {key:'I7/P7',label:'Co-investment', inv:'Preferred',        proj:'Unavailable',           score:30},
+    {key:'I8/P8',label:'Timeline',     inv:'3–5 years',         proj:'6-8 years',             score:38},
+  ],
+};
+
 const MatchingEngine = () => {
   const [selectedProject, setSelectedProject] = useState('SC-KE-2026-0041');
   const proj = SEED_PROJECTS.find(p=>p.id===selectedProject);
 
-  const attrs = [
-    {key:'I1/P1',label:'Geography',inv:'Sub-Saharan Africa',proj:'Kenya ✓',score:100},
-    {key:'I2/P2',label:'Technology',inv:'Solar PV',proj:'Solar PV ✓',score:100},
-    {key:'I3/P3',label:'Ticket size',inv:'$50K–$500K',proj:'$75K ✓',score:95},
-    {key:'I4/P4',label:'Risk appetite',inv:'Moderate (3)',proj:'Low-Mod (2)',score:80},
-    {key:'I5/P5',label:'Impact metrics',inv:'Jobs, CO₂',proj:'Jobs, CO₂ ✓',score:92},
-    {key:'I6/P6',label:'Blended finance',inv:'Yes',proj:'Yes ✓',score:100},
-    {key:'I7/P7',label:'Co-investment',inv:'Preferred',proj:'Available ✓',score:90},
-    {key:'I8/P8',label:'Timeline',inv:'3–5 years',proj:'4 years ✓',score:85},
-  ];
+  const attrs = PROJECT_ATTRS[selectedProject] || PROJECT_ATTRS['SC-KE-2026-0041'];
+  const computedScore = Math.round(attrs.reduce((sum,a,i)=>sum+a.score*MATCH_WEIGHTS[i]/100, 0));
 
   return (
     <div>
@@ -703,10 +840,13 @@ const MatchingEngine = () => {
           <div>
             <div className="match-result">
               <div style={{fontSize:13,opacity:.8,marginBottom:6}}>WEIGHTED MATCH SCORE</div>
-              <div className="match-score-big">{proj.score}%</div>
+              <div className="match-score-big">{computedScore}%</div>
               <div className="match-label">Stage O1 — Indicative</div>
-              <div className="match-gate gate-ok" style={{marginTop:10}}>✓ Score ≥70% threshold met</div>
-              <div className="match-gate gate-ok" style={{marginTop:6}}>✓ Stage O2 Verified Match triggered</div>
+              {computedScore>=70
+                ? <><div className="match-gate gate-ok" style={{marginTop:10}}>✓ Score ≥70% threshold met</div>
+                    <div className="match-gate gate-ok" style={{marginTop:6}}>✓ Stage O2 Verified Match triggered</div></>
+                : <div className="match-gate" style={{marginTop:10,background:'rgba(122,32,16,.3)'}}>✗ Score below 70% — O2 not triggered</div>
+              }
             </div>
           </div>
         </div>
@@ -854,6 +994,137 @@ const DLT = () => (
   </div>
 );
 
+// ─── SCREEN 6: ROADMAP & GRANT INVESTMENT PLAN ───────────────────────────────
+const RoadmapScreen = () => (
+  <div>
+    <div className="page-title">Roadmap &amp; Grant Investment Plan</div>
+    <div className="page-sub">18-month development roadmap — prototype to production | WIPO Partnership Grant Application. Phase allocations shown as % of selected investment tier.</div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16,marginBottom:20}}>
+      {[
+        {phase:'Phase 1', period:'Months 1-6', budget:'40%', color:'var(--md)', items:[
+          'Core platform hardening and security audit',
+          'WIPO PATENTSCOPE API integration (live IP cross-reference)',
+          'Onboard 25 real projects across 5 countries',
+          'AI model fine-tuning on real match data',
+          'User acceptance testing with 3 pilot investors',
+        ]},
+        {phase:'Phase 2', period:'Months 7-12', budget:'40%', color:'var(--gn)', items:[
+          'Stellar smart contract audit and mainnet deployment',
+          'dMRV oracle integration (IoT sensor feeds)',
+          'USDC disbursement for first 5 live contracts',
+          'Governance framework documentation for WIPO',
+          'SDG impact reporting dashboard (UN SDG APIs)',
+        ]},
+        {phase:'Phase 3', period:'Months 13-18', budget:'20%', color:'var(--am)', items:[
+          'Scale to 100+ projects, 10+ investor institutions',
+          'Multi-language support (FR, ES, AR)',
+          'Open-source core matching algorithm release',
+          'WIPO co-branding and joint press release',
+          'Sustainability model - transaction fee revenue',
+        ]},
+      ].map(p=>(
+        <div key={p.phase} style={{background:'#fff',borderRadius:10,padding:'18px 20px',boxShadow:'0 1px 4px rgba(0,0,0,.08)',borderTop:`4px solid ${p.color}`}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:10}}>
+            <div>
+              <div style={{fontWeight:800,fontSize:15,color:'var(--dk)'}}>{p.phase}</div>
+              <div style={{fontSize:11,color:'var(--gr)',marginTop:1}}>{p.period}</div>
+            </div>
+            <div style={{background:p.color,color:'#fff',fontWeight:800,fontSize:13,padding:'4px 12px',borderRadius:6,whiteSpace:'nowrap'}}>{p.budget}</div>
+          </div>
+          <ul style={{margin:0,padding:'0 0 0 16px',listStyle:'disc',fontSize:12,color:'var(--bk)',lineHeight:1.75}}>
+            {p.items.map((it,i)=><li key={i}>{it}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div className="card">
+      <div className="card-title">📊 Scalable Investment Model — Three Entry Tiers</div>
+      <div style={{fontSize:12,color:'var(--gr)',marginBottom:16}}>DTID presents three partnership tiers. WIPO selects the level of engagement that fits its mandate. All tiers include the 18-month roadmap; scope expands with investment.</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Activity Category</th>
+            <th style={{textAlign:'center',background:'#f5f9f5'}}>Tier 1 — Proof of Concept<br/><span style={{fontWeight:400,fontSize:10,color:'var(--gr)'}}>Entry-level · pilot with WIPO</span></th>
+            <th style={{textAlign:'center',background:'#f0f6f7'}}>Tier 2 — Full Build<br/><span style={{fontWeight:400,fontSize:10,color:'var(--gr)'}}>Recommended · production-ready</span></th>
+            <th style={{textAlign:'center',background:'#fef9ef'}}>Tier 3 — Partnership Scale<br/><span style={{fontWeight:400,fontSize:10,color:'var(--gr)'}}>Joint WIPO-DTID global programme</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Platform Development (engineering)',       '✓ Core','✓ Full + audit','✓ Full + multi-language'],
+            ['Smart Contract Audit (Stellar/Soroban)',   '—',     '✓ Included',    '✓ Included'],
+            ['WIPO PATENTSCOPE API Integration',        '✓ Basic','✓ Full',        '✓ Full + WIPO GREEN feed'],
+            ['Pilot Project Onboarding (countries)',    '5 countries','15 countries','23+ countries'],
+            ['dMRV Oracle + IoT Integration',           '—',     '✓ Included',    '✓ Included + mobile'],
+            ['SDG Impact Reporting Dashboard',          '✓ Basic','✓ Full',        '✓ UN API connected'],
+            ['Open-Source Core Engine Release',         '—',     '✓ Included',    '✓ Included'],
+            ['WIPO Co-branding + Joint Press Release',  '✓',     '✓',             '✓ COP32 launch event'],
+          ].map(([cat,...tiers])=>(
+            <tr key={cat}>
+              <td style={{fontWeight:500}}>{cat}</td>
+              {tiers.map((v,i)=>(
+                <td key={i} style={{textAlign:'center',fontSize:11.5,color:v==='—'?'#ccc':v.startsWith('✓')?'var(--gn)':'var(--bk)'}}>{v}</td>
+              ))}
+            </tr>
+          ))}
+          <tr style={{background:'var(--lt)',fontWeight:800}}>
+            <td>Indicative Investment Range</td>
+            <td style={{textAlign:'center',color:'var(--gn)'}}>€150K–€250K</td>
+            <td style={{textAlign:'center',color:'var(--md)'}}>€500K–€750K</td>
+            <td style={{textAlign:'center',color:'var(--am)'}}>€1M–€2M+</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style={{marginTop:10,padding:'9px 13px',background:'var(--xlt)',borderRadius:6,fontSize:12,color:'var(--dk)',lineHeight:1.6}}>
+        <strong>Note:</strong> Investment ranges are indicative and will be confirmed through a co-developed workplan. DTID is open to phased disbursement, in-kind contributions, and co-funding structures aligned with WIPO's grant and partnership instruments.
+      </div>
+    </div>
+
+    <div className="card">
+      <div className="card-title">🎯 Success Metrics — Tier 2 Reference Targets</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+        {[
+          ['Projects registered on platform','150+'],
+          ['Countries represented','15+'],
+          ['Investors onboarded','15+'],
+          ['Live smart contracts executed','20+'],
+          ['Capital matched via platform','€2M+'],
+          ['CO₂e impact tracked on-chain','15,000+ tCO₂e'],
+          ['SDG alignment coverage','100% of projects'],
+          ['WIPO PATENTSCOPE cross-refs','100+ IP assets'],
+          ['Open-source release','Core engine published (GitHub)'],
+          ['Sustainability post-grant','Transaction fee revenue model active'],
+        ].map(([k,v])=>(
+          <div key={k} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'7px 10px',background:'var(--xlt)',borderRadius:6,gap:8}}>
+            <span style={{fontSize:11.5,color:'var(--bk)'}}>{k}</span>
+            <span style={{fontSize:12,fontWeight:700,color:'var(--gn)',whiteSpace:'nowrap'}}>{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="card">
+      <div className="card-title">🌐 Why WIPO is the Right Partner</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:12,marginTop:4}}>
+        {[
+          {icon:'🏛️', title:'Global Trust', desc:'WIPO\'s international mandate gives GreenImpact Connect instant credibility with investors and project developers in 193 member states.'},
+          {icon:'📚', title:'IP Infrastructure', desc:'WIPO PATENTSCOPE integration enables live IP cross-referencing, protecting developers\' innovations and attracting IP-aware investors.'},
+          {icon:'🌱', title:'GREEN & Match Networks', desc:'Built on the gap analysis: WIPO GREEN finds technology, WIPO Match supports IP — GreenImpact Connect closes the finance gap neither addresses.'},
+          {icon:'🤝', title:'COP31 Visibility', desc:'Joint announcement at COP31 Antalya positions the partnership at the intersection of climate action, innovation, and development finance.'},
+        ].map(p=>(
+          <div key={p.title} style={{background:'var(--xlt)',borderRadius:8,padding:'14px 14px',borderLeft:'3px solid var(--md)'}}>
+            <div style={{fontSize:20,marginBottom:6}}>{p.icon}</div>
+            <div style={{fontWeight:700,fontSize:12,color:'var(--dk)',marginBottom:5}}>{p.title}</div>
+            <div style={{fontSize:11.5,color:'var(--gr)',lineHeight:1.5}}>{p.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 // ─── ZOOM STAGE CONFIG ───────────────────────────────────────────────────────
 const ZOOM_SEQUENCE = [
   { id:'registry',  label:'Project Registration',    n:1, icon:'📋' },
@@ -969,6 +1240,7 @@ function App() {
       case 'investor':  return <InvestorDashboard/>;
       case 'matching':  return <MatchingEngine/>;
       case 'dlt':       return <DLT/>;
+      case 'roadmap':   return <RoadmapScreen/>;
     }
   };
 
@@ -984,7 +1256,7 @@ function App() {
         </div>
         <div className="header-right">
           Digital Technology Institute for Development<br/>
-          <span className="badge">PROTOTYPE v0.2 — COP31 DEMO</span>
+          <span className="badge">PROTOTYPE v0.3 — COP31 DEMO</span>
         </div>
       </header>
 
@@ -1009,7 +1281,7 @@ function App() {
       </div>
 
       <footer>
-        <span>GreenImpact Connect v0.2 | DTID Emerging Technology Division</span>
+        <span>GreenImpact Connect v0.3 | DTID Emerging Technology Division</span>
         <span>Prototype — COP31 · WIPO Partnership Demo, Antalya 9 Nov 2026 | Not for public distribution</span>
       </footer>
 
