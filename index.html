@@ -15,6 +15,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Calibri,sans-serif;}
 body{background:var(--xlt);color:var(--bk);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+html{overflow:hidden;height:100%;}
 /* HEADER */
 header{background:var(--dk);color:#fff;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;}
 .logo{display:flex;align-items:center;gap:12px;}
@@ -24,7 +25,7 @@ header{background:var(--dk);color:#fff;padding:0 28px;display:flex;align-items:c
 .header-right{font-size:11px;color:var(--lt);text-align:right;line-height:1.5;}
 .badge{background:var(--am);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:2px;}
 /* LAYOUT */
-.app{display:flex;flex:1;overflow:hidden;min-height:0;}
+.app{display:flex;flex:1;height:0;overflow:hidden;}
 /* NAV */
 nav{width:210px;background:var(--dk);padding:16px 0;flex-shrink:0;overflow-y:auto;}
 .nav-section{font-size:10px;color:#5a8a96;font-weight:700;letter-spacing:1.2px;padding:12px 18px 5px;text-transform:uppercase;}
