@@ -253,7 +253,7 @@ const HomeScreen = ({goTo, zoomTo, projectCount}) => (
       <div style={{position:'relative'}}>
         <div style={{fontSize:10,letterSpacing:2,opacity:.55,textTransform:'uppercase',marginBottom:10,fontFamily:'Consolas,monospace'}}>Digital Technology Institute for Development · Emerging Technology Division</div>
         <div style={{fontSize:28,fontWeight:900,lineHeight:1.15,marginBottom:11}}>GreenImpact Connect</div>
-        <div style={{fontSize:13.5,opacity:.85,lineHeight:1.7,maxWidth:560,marginBottom:20}}>
+        <div style={{fontSize:13.5,opacity:.85,lineHeight:1.7,maxWidth:900,marginBottom:20}}>
           An AI-powered platform connecting climate finance investors with small environmental projects in developing countries — closing a gap that WIPO GREEN and WIPO Match do not address.
         </div>
         <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:18}}>
@@ -323,6 +323,30 @@ const HomeScreen = ({goTo, zoomTo, projectCount}) => (
         </div>
       ))}
     </div>
+
+    <div className="card">
+      <div className="card-title">🏛️ Platform Governance Model</div>
+      <div style={{fontSize:12,color:'var(--gr)',marginBottom:16}}>Six-layer oversight ensures integrity, accountability, and investor confidence at every stage</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:10}}>
+        {[
+          {n:1, icon:'👩‍💻', label:'Project Developer', detail:'Registers project, uploads IP and MRV baseline documents'},
+          {n:2, icon:'🔍', label:'DTID Review', detail:'Technical and eligibility screening by DTID Emerging Tech team'},
+          {n:3, icon:'🏛️', label:'WIPO Oversight', detail:'IP cross-check against PATENTSCOPE; technology classification'},
+          {n:4, icon:'💼', label:'Investor Approval', detail:'Investor reviews AI match score and expresses Stage 2 interest'},
+          {n:5, icon:'📡', label:'dMRV Oracle', detail:'Independent sensor-based verification of climate impact milestones'},
+          {n:6, icon:'⛓️', label:'Stellar Settlement', detail:'Smart contract automatically releases payment on oracle confirmation'},
+        ].map((g,i,arr)=>(
+          <React.Fragment key={g.n}>
+            <div style={{textAlign:'center',padding:'12px 8px',background:'var(--xlt)',borderRadius:8,border:'1px solid var(--lt)',position:'relative'}}>
+              <div style={{fontSize:22,marginBottom:6}}>{g.icon}</div>
+              <div style={{fontSize:10,fontWeight:700,color:'var(--dk)',marginBottom:4,lineHeight:1.3}}>{g.label}</div>
+              <div style={{fontSize:10,color:'var(--gr)',lineHeight:1.4}}>{g.detail}</div>
+              <div style={{position:'absolute',top:'50%',right:-6,transform:'translateY(-50%)',color:'var(--md)',fontWeight:700,fontSize:13,zIndex:1,display:i<arr.length-1?'block':'none'}}>›</div>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
   </div>
 );
 
@@ -332,29 +356,14 @@ const Dashboard = ({goTo, projectCount}) => (
     <div className="page-title">Portfolio Dashboard</div>
     <div className="page-sub">Live portfolio overview — all registered projects, capital matched, and regional activity | Updated 3 Nov 2026</div>
 
-    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,marginBottom:20}}>
-      {[
-        {title:'WIPO GREEN',sub:'Technology Database',desc:'Lists clean technology innovations globally. Helps organisations find green tech patents and solutions. No mechanism to connect project developers with investors.',ok:false,ref:'wipogreen.wipo.int'},
-        {title:'WIPO Match',sub:'IP Assistance Matching',desc:'Connects organisations seeking IP technical assistance with legal and advisory providers. Scoped to intellectual property support — not climate finance.',ok:false,ref:'wipo.int/en/web/wipo-match'},
-        {title:'GreenImpact Connect',sub:'Climate Finance Matching',desc:'Closes the gap: AI-powered matching between investors and small environmental projects in developing countries, with blockchain-verified disbursement.',ok:true,ref:'DTID · COP31 Antalya, November 2026'},
-      ].map(p=>(
-        <div key={p.title} style={{background:'#fff',borderRadius:10,padding:'14px 16px',boxShadow:'0 1px 4px rgba(0,0,0,.07)',borderTop:`3px solid ${p.ok?'var(--gn)':'var(--lt)'}`}}>
-          <div style={{fontWeight:700,fontSize:12.5,color:'var(--dk)',marginBottom:2}}>{p.ok?'🌱 ':''}{p.title}</div>
-          <div style={{fontSize:10,color:'var(--gr)',textTransform:'uppercase',letterSpacing:'.5px',marginBottom:7}}>{p.sub}</div>
-          <div style={{fontSize:11.5,color:'var(--bk)',lineHeight:1.55,marginBottom:8}}>{p.desc}</div>
-          <div style={{fontSize:11,color:p.ok?'var(--gn)':'var(--rd)',fontWeight:600}}>{p.ok?'✓ Fills the gap':'✗ Does not cover direct climate finance matching'}</div>
-          <div style={{fontSize:10,color:'var(--gr)',marginTop:4}}>{p.ref}</div>
-        </div>
-      ))}
-    </div>
-
     <div className="kpi-grid">
       <div className="kpi-card"><div className="kpi-value">{projectCount}</div><div className="kpi-label">Projects Registered</div><div className="kpi-delta">▲ 12 this quarter</div></div>
       <div className="kpi-card green"><div className="kpi-value">$4.2M</div><div className="kpi-label">Capital Matched</div><div className="kpi-delta">▲ $680K this quarter</div></div>
       <div className="kpi-card amber"><div className="kpi-value">23</div><div className="kpi-label">Countries</div><div className="kpi-delta">Africa · SE Asia · Pacific</div></div>
       <div className="kpi-card"><div className="kpi-value">78%</div><div className="kpi-label">Avg AI Match Score</div><div className="kpi-delta">Stage 1 indicative</div></div>
     </div>
-    <div className="two-col">
+   
+    <div style={{fontSize:11,color:'var(--gr)',fontStyle:'italic',marginBottom:16,marginTop:-8,paddingLeft:4}}>Additional KPIs — jobs created, biodiversity credits, energy access households — will be introduced in future phases to track portfolio performance comprehensively.</div> <div className="two-col">
       <div className="card">
         <div className="card-title">🌍 Active Projects by Region</div>
         <table>
@@ -405,29 +414,7 @@ const Dashboard = ({goTo, projectCount}) => (
       </div>
     </div>
 
-    <div className="card">
-      <div className="card-title">🏛️ Platform Governance Model</div>
-      <div style={{fontSize:12,color:'var(--gr)',marginBottom:16}}>Six-layer oversight ensures integrity, accountability, and investor confidence at every stage</div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:10}}>
-        {[
-          {n:1, icon:'👩‍💻', label:'Project Developer', detail:'Registers project, uploads IP and MRV baseline documents'},
-          {n:2, icon:'🔍', label:'DTID Review', detail:'Technical and eligibility screening by DTID Emerging Tech team'},
-          {n:3, icon:'🏛️', label:'WIPO Oversight', detail:'IP cross-check against PATENTSCOPE; technology classification'},
-          {n:4, icon:'💼', label:'Investor Approval', detail:'Investor reviews AI match score and expresses Stage 2 interest'},
-          {n:5, icon:'📡', label:'dMRV Oracle', detail:'Independent sensor-based verification of climate impact milestones'},
-          {n:6, icon:'⛓️', label:'Stellar Settlement', detail:'Smart contract automatically releases payment on oracle confirmation'},
-        ].map((g,i,arr)=>(
-          <React.Fragment key={g.n}>
-            <div style={{textAlign:'center',padding:'12px 8px',background:'var(--xlt)',borderRadius:8,border:'1px solid var(--lt)',position:'relative'}}>
-              <div style={{fontSize:22,marginBottom:6}}>{g.icon}</div>
-              <div style={{fontSize:10,fontWeight:700,color:'var(--dk)',marginBottom:4,lineHeight:1.3}}>{g.label}</div>
-              <div style={{fontSize:10,color:'var(--gr)',lineHeight:1.4}}>{g.detail}</div>
-              <div style={{position:'absolute',top:'50%',right:-6,transform:'translateY(-50%)',color:'var(--md)',fontWeight:700,fontSize:13,zIndex:1,display:i<arr.length-1?'block':'none'}}>›</div>
-            </div>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
+
   </div>
 );
 
@@ -1221,7 +1208,59 @@ const NAV_ITEMS = [
   { id:'dlt',       label:'DLT Disbursement',       icon:'⛓️', section:'Settlement' },
 ];
 
+
+// ─── LOGIN SCREEN ─────────────────────────────────────────────────────────────
+const LoginScreen = ({onLogin}) => {
+  const [user, setUser] = React.useState('');
+  const [pass, setPass] = React.useState('');
+  const [err,  setErr]  = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+
+  const handleLogin = () => {
+    if (user.trim().toLowerCase() === 'demo' && pass === 'cop31') {
+      setLoading(true);
+      setTimeout(() => onLogin(), 800);
+    } else {
+      setErr('Invalid credentials. Contact DTID-BCI for access.');
+    }
+  };
+  const onKey = (e) => { if (e.key === 'Enter') handleLogin(); setErr(''); };
+
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg,var(--dk) 0%,#1a5a6b 60%,var(--md) 100%)'}}>
+      <div style={{background:'#fff',borderRadius:16,padding:'44px 48px',width:400,boxShadow:'0 20px 60px rgba(0,0,0,.25)',position:'relative'}}>
+        <div style={{textAlign:'center',marginBottom:28}}>
+          {window.DTID_LOGO && <img src={window.DTID_LOGO} alt="DTID" style={{height:52,marginBottom:16}}/>}
+          <div style={{fontSize:22,fontWeight:900,color:'var(--dk)',letterSpacing:'-0.3px'}}>GreenImpact Connect</div>
+          <div style={{fontSize:11.5,color:'var(--gr)',marginTop:5,textTransform:'uppercase',letterSpacing:'1px'}}>Prototype v0.4 — COP31 Demo</div>
+        </div>
+        <div style={{marginBottom:16}}>
+          <label style={{fontSize:11.5,fontWeight:700,color:'var(--dk)',display:'block',marginBottom:5,textTransform:'uppercase',letterSpacing:'.5px'}}>Username</label>
+          <input value={user} onChange={e=>{setUser(e.target.value);setErr('');}} onKeyDown={onKey}
+            style={{width:'100%',padding:'10px 14px',border:'1.5px solid var(--lt)',borderRadius:8,fontSize:14,outline:'none',boxSizing:'border-box',fontFamily:'Calibri,sans-serif'}}
+            placeholder="Enter username" autoFocus/>
+        </div>
+        <div style={{marginBottom:20}}>
+          <label style={{fontSize:11.5,fontWeight:700,color:'var(--dk)',display:'block',marginBottom:5,textTransform:'uppercase',letterSpacing:'.5px'}}>Password</label>
+          <input type="password" value={pass} onChange={e=>{setPass(e.target.value);setErr('');}} onKeyDown={onKey}
+            style={{width:'100%',padding:'10px 14px',border:'1.5px solid var(--lt)',borderRadius:8,fontSize:14,outline:'none',boxSizing:'border-box',fontFamily:'Calibri,sans-serif'}}
+            placeholder="Enter password"/>
+        </div>
+        {err && <div style={{background:'#fff0ee',border:'1px solid #f5c0ba',borderRadius:7,padding:'8px 12px',fontSize:12,color:'#7a2010',marginBottom:14}}>{err}</div>}
+        <button onClick={handleLogin} disabled={loading}
+          style={{width:'100%',padding:'12px',background:loading?'var(--md)':'var(--dk)',color:'#fff',border:'none',borderRadius:9,fontSize:14,fontWeight:700,cursor:'pointer',fontFamily:'Cambria,serif',letterSpacing:'.3px',transition:'background .2s'}}>
+          {loading ? 'Signing in...' : 'Sign In →'}
+        </button>
+        <div style={{marginTop:18,textAlign:'center',fontSize:10.5,color:'var(--gr)'}}>
+          DTID Emerging Technology Division · Access restricted to authorised users
+        </div>
+      </div>
+    </div>
+  );
+};
+
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const [active, setActive]   = useState('home');
   const [zoomed, setZoomed]   = useState(null);   // screen ID being zoomed, or null
   const [projects, setProjects] = useState(SEED_PROJECTS);
@@ -1245,6 +1284,8 @@ function App() {
     }
   };
 
+  if (!loggedIn) return <LoginScreen onLogin={() => setLoggedIn(true)} />;
+
   return (
     <>
       <header>
@@ -1255,9 +1296,10 @@ function App() {
             <div className="logo-sub">AI-POWERED CLIMATE FINANCE MATCHING</div>
           </div>
         </div>
-        <div className="header-right" style={{display:'flex',alignItems:'center',gap:12}}>
-          <img src={window.DTID_LOGO} alt='DTID' style={{height:38,borderRadius:4}} />
-          <span className="badge">PROTOTYPE v0.3 — COP31 DEMO</span>
+        <div className="header-right" style={{display:'flex',alignItems:'center',gap:14}}>
+          <img src={window.DTID_LOGO} alt='DTID' style={{height:62,width:'auto',borderRadius:4}} />
+          <span className="badge">PROTOTYPE v0.4 — COP31 DEMO</span>
+          <button onClick={()=>setLoggedIn(false)} style={{background:'var(--dk)',border:'none',borderRadius:7,padding:'7px 16px',fontSize:12,fontWeight:700,color:'#fff',cursor:'pointer',fontFamily:'Calibri,sans-serif',letterSpacing:'.3px',boxShadow:'0 1px 4px rgba(0,0,0,.2)'}}>Sign Out</button>
         </div>
       </header>
 
@@ -1282,7 +1324,7 @@ function App() {
       </div>
 
       <footer>
-        <span>GreenImpact Connect v0.3 | DTID Emerging Technology Division</span>
+        <span>GreenImpact Connect v0.4 | DTID Emerging Technology Division</span>
         <span>Prototype — COP31 · WIPO Partnership Demo, Antalya 9 Nov 2026 | Not for public distribution</span>
       </footer>
 
